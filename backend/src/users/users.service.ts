@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from '../../generated/prisma';
 import * as bcrypt from 'bcrypt';
 
@@ -117,11 +118,60 @@ export class UsersService {
     return user;
   }
 
-  update(id: number, updateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.databaseService.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: `User with id ${id} not found`,
+      });
+    }
+
+    if (updateUserDto.passwordHash) {
+      updateUserDto.passwordHash = await bcrypt.hash(
+        updateUserDto.passwordHash,
+        10,
+      );
+    }
+
+    if (updateUserDto.email) {
+      const existingUser = await this.databaseService.user.findUnique({
+        where: { email: updateUserDto.email },
+      });
+
+      if (existingUser && existingUser.id !== id) {
+        throw new ConflictException({
+          statusCode: 409,
+          message: `Email ${updateUserDto.email} sudah terdaftar`,
+        });
+      }
+    }
+
+    return await this.databaseService.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const user = await this.databaseService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: `User with id ${id} not found`,
+      });
+    }
+
+    return await this.databaseService.user.delete({
+      where: { id },
+    });
   }
 }

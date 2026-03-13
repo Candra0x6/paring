@@ -14,6 +14,7 @@ import {
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { CreateUserDto, CreateUserSchema } from './dto/create-user.dto';
+import { UpdateUserDto, UpdateUserSchema } from './dto/update-user.dto';
 import { Response } from 'express';
 import { Role } from 'generated/prisma/enums';
 
@@ -22,8 +23,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @UsePipes(new ZodValidationPipe(CreateUserSchema))
-  async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+  async create(
+    @Body(new ZodValidationPipe(CreateUserSchema)) createUserDto: CreateUserDto,
+    @Res() res: Response,
+  ) {
     return res.status(201).json({
       message: 'User created successfully',
       data: await this.usersService.create(createUserDto),
@@ -50,12 +53,24 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(UpdateUserSchema)) updateUserDto: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+    const updatedUser = await this.usersService.update(id, updateUserDto);
+    return res.status(200).json({
+      message: 'User updated successfully',
+      data: updatedUser,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    const removedUser = await this.usersService.remove(id);
+    return res.status(200).json({
+      message: 'User removed successfully',
+      data: removedUser,
+    });
   }
 }

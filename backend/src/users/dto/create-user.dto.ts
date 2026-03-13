@@ -1,9 +1,7 @@
 import { z } from 'zod';
 
-// Enum Role sesuai dengan Prisma schema
 export const RoleEnum = z.enum(['ADMIN', 'FAMILY', 'NURSE']);
 
-// Zod schema untuk membuat user baru
 export const CreateUserSchema = z.object({
   email: z.email({ message: 'Format email tidak valid' }),
 
@@ -24,5 +22,4 @@ export const CreateUserSchema = z.object({
   role: RoleEnum.optional().default('FAMILY'),
 });
 
-// TypeScript type yang di-infer langsung dari Zod schema
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;
