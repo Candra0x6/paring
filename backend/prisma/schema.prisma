@@ -33,6 +33,11 @@ enum AppointmentStatus {
   CANCELLED
 }
 
+enum ServiceName {
+  MEDIS
+  NON_MEDIS
+}
+
 // Model utama untuk autentikasi dan otorisasi pengguna
 model User {
   id           String   @id @default(uuid())
@@ -91,6 +96,7 @@ model Appointment {
   nurse     NurseProfile @relation(fields: [nurseId], references: [id])
 
   serviceType ServiceType
+  serviceName ServiceName
   status      AppointmentStatus @default(PENDING)
   totalPrice  Float
 
@@ -131,10 +137,23 @@ model CareLog {
   moodScore      Int? // Skala 1-5 untuk grafik mood pasien
   clinicalNotes  String? @db.Text // Menggunakan db.Text untuk memfasilitasi catatan panjang perawat
 
+  // Log aktivitas perawat
+  activityLog ActivityLog[]
+
   // Timestamp
   recordedAt DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   // Indexing untuk performa kueri grafik
   @@index([patientId, recordedAt])
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  notes     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  careLogId String
+  careLog   CareLog @relation(fields: [careLogId], references: [id])
 }
