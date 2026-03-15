@@ -4,7 +4,11 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreatePatientDto, UpdatePatientDto, GetPatientsFilterDto } from './dto/patient.dto';
+import {
+  CreatePatientDto,
+  UpdatePatientDto,
+  GetPatientsFilterDto,
+} from './dto/patient.dto';
 
 @Injectable()
 export class PatientsService {
@@ -114,15 +118,142 @@ export class PatientsService {
     return patients;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} patient`;
+  async findOne(id: string) {
+    const patient = await this.databaseService.patient.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        dateOfBirth: true,
+        weight: true,
+        height: true,
+        medicalHistory: true,
+        family: {
+          select: {
+            id: true,
+            fullName: true,
+            phoneNumber: true,
+          },
+        },
+        appointments: {
+          select: {
+            id: true,
+            serviceType: true,
+            status: true,
+            dueDate: true,
+            totalPrice: true,
+            nurse: {
+              select: {
+                id: true,
+                specialization: true,
+                rating: true,
+                user: {
+                  select: {
+                    fullName: true,
+                    phoneNumber: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { dueDate: 'desc' },
+        },
+      },
+    });
+
+    if (!patient) {
+      throw new NotFoundException(`Pasien dengan ID ${id} tidak ditemukan`);
+    }
+
+    return patient;
   }
 
-  update(id: string, updatePatientDto: UpdatePatientDto) {
-    return `This action updates a #${id} patient`;
+  async update(id: string, updatePatientDto: UpdatePatientDto) {
+    const existingPatient = await this.databaseService.patient.findUnique({
+      where: { id },
+    });
+
+    if (!existingPatient) {
+      throw new NotFoundException(`Pasien dengan ID ${id} tidak ditemukan`);
+    }
+
+    if (
+      updatePatientDto.familyId &&
+      updatePatientDto.familyId !== existingPatient.familyId
+    ) {
+      const userExists = await this.databaseService.user.findUnique({
+        where: { id: updatePatientDto.familyId },
+      });
+
+      if (!userExists) {
+        throw new NotFoundException(
+          `User dengan ID ${updatePatientDto.familyId} tidak ditemukan`,
+        );
+      }
+
+      if (userExists.role !== 'FAMILY') {
+        throw new BadRequestException(
+          `User dengan ID ${updatePatientDto.familyId} bukan merupakan akun FAMILY`,
+        );
+      }
+    }
+
+    if (updatePatientDto.name || updatePatientDto.familyId) {
+      const targetFamilyId =
+        updatePatientDto.familyId || existingPatient.familyId;
+      const targetName = updatePatientDto.name || existingPatient.name;
+
+      if (
+        targetName !== existingPatient.name ||
+        targetFamilyId !== existingPatient.familyId
+      ) {
+        const duplicatePatient = await this.databaseService.patient.findFirst({
+          where: {
+            familyId: targetFamilyId,
+            name: targetName,
+            id: { not: id },
+          },
+        });
+
+        if (duplicatePatient) {
+          throw new BadRequestException(
+            `Pasien dengan nama ${targetName} sudah didaftarkan oleh akun ini`,
+          );
+        }
+      }
+    }
+
+    const data: any = { ...updatePatientDto };
+
+    if (
+      data.dateOfBirth &&
+      (typeof data.dateOfBirth === 'string' ||
+        typeof data.dateOfBirth === 'number')
+    ) {
+      data.dateOfBirth = new Date(data.dateOfBirth);
+    }
+
+    if (data.medicalHistory && Array.isArray(data.medicalHistory)) {
+      data.medicalHistory = data.medicalHistory.join(', ');
+    }
+
+    return await this.databaseService.patient.update({
+      where: { id },
+      data,
+    });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} patient`;
+  async remove(id: string) {
+    const existingPatient = await this.databaseService.patient.findUnique({
+      where: { id },
+    });
+
+    if (!existingPatient) {
+      throw new NotFoundException(`Pasien dengan ID ${id} tidak ditemukan`);
+    }
+
+    return await this.databaseService.patient.delete({
+      where: { id },
+    });
   }
 }

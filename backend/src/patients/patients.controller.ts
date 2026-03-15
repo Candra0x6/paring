@@ -41,7 +41,8 @@ export class PatientsController {
 
   @Get()
   async findAll(
-    @Query(new ZodValidationPipe(getPatientsFilterSchema)) filter: GetPatientsFilterDto,
+    @Query(new ZodValidationPipe(getPatientsFilterSchema))
+    filter: GetPatientsFilterDto,
     @Res() res: Response,
   ) {
     return res.status(HttpStatus.OK).json({
@@ -51,18 +52,31 @@ export class PatientsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.patientsService.findOne(id);
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    return res.status(HttpStatus.OK).json({
+      message: 'Patient fetched successfully',
+      data: await this.patientsService.findOne(id),
+    });
   }
 
   @Patch(':id')
   @UsePipes(new ZodValidationPipe(updatePatientSchema))
-  update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto) {
-    return this.patientsService.update(id, updatePatientDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updatePatientDto: UpdatePatientDto,
+    @Res() res: Response,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      message: 'Patient updated successfully',
+      data: await this.patientsService.update(id, updatePatientDto),
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.patientsService.remove(id);
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    return res.status(HttpStatus.ACCEPTED).json({
+      message: 'Patient deleted successfully',
+      data: await this.patientsService.remove(id),
+    });
   }
 }
