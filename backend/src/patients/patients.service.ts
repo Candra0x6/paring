@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreatePatientDto, UpdatePatientDto } from './dto/patient.dto';
+import { CreatePatientDto, UpdatePatientDto, GetPatientsFilterDto } from './dto/patient.dto';
 
 @Injectable()
 export class PatientsService {
@@ -63,8 +63,55 @@ export class PatientsService {
     });
   }
 
-  findAll() {
-    return `This action returns all patients`;
+  async findAll(filter?: GetPatientsFilterDto) {
+    const { name, hasAppointments, status } = filter || {};
+    const whereClause: any = {};
+
+    if (name) {
+      whereClause.name = { contains: name, mode: 'insensitive' };
+    }
+
+    if (status) {
+      whereClause.appointments = { some: { status } };
+    } else if (hasAppointments === 'true') {
+      whereClause.appointments = { some: {} };
+    } else if (hasAppointments === 'false') {
+      whereClause.appointments = { none: {} };
+    }
+
+    const patients = await this.databaseService.patient.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        name: true,
+        dateOfBirth: true,
+        weight: true,
+        height: true,
+        medicalHistory: true,
+        family: {
+          select: {
+            id: true,
+            fullName: true,
+            phoneNumber: true,
+          },
+        },
+        appointments: {
+          select: {
+            id: true,
+            serviceType: true,
+            status: true,
+            dueDate: true,
+          },
+          orderBy: { dueDate: 'asc' },
+        },
+      },
+    });
+
+    if (patients.length === 0) {
+      throw new NotFoundException('Pasien tidak ditemukan');
+    }
+
+    return patients;
   }
 
   findOne(id: string) {

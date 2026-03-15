@@ -9,14 +9,17 @@ import {
   UsePipes,
   Res,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import {
   createPatientSchema,
   updatePatientSchema,
+  getPatientsFilterSchema,
   CreatePatientDto,
   UpdatePatientDto,
+  GetPatientsFilterDto,
 } from './dto/patient.dto';
 import { Response } from 'express';
 
@@ -37,8 +40,14 @@ export class PatientsController {
   }
 
   @Get()
-  findAll() {
-    return this.patientsService.findAll();
+  async findAll(
+    @Query(new ZodValidationPipe(getPatientsFilterSchema)) filter: GetPatientsFilterDto,
+    @Res() res: Response,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      message: 'Patients fetched successfully',
+      data: await this.patientsService.findAll(filter),
+    });
   }
 
   @Get(':id')
