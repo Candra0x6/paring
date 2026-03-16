@@ -1,345 +1,300 @@
-# Paring API
+# Paring API Documentation
 
-REST API untuk sistem **Paring**, sebuah platform yang menghubungkan **pasien dengan perawat** serta mengelola appointment layanan kesehatan.
+Dokumentasi ini memuat endpoint untuk layanan Paring API. 
 
-API ini dibangun dengan pendekatan **RESTful** dan menyediakan endpoint untuk:
-
-* Authentication
-* User Management
-* Nurse Management
-* Patient Management
-* Appointment Management
-* Activity Logging
+**Base URL:** `{{BASE_URL}}`
 
 ---
 
-# Base URL
-
-```bash
-{{BASE_URL}}
-```
-
-Contoh saat development:
-
-```bash
-http://localhost:3000
-```
+## Tabel Konten
+1. [USER](#1-user)
+2. [NURSE](#2-nurse)
+3. [Patient](#3-patient)
+4. [Appointments](#4-appointments)
+5. [Activity Log](#5-activity-log)
+6. [Auth](#6-auth)
 
 ---
 
-# Authentication
+## 1. USER
 
-## Login
+### NEW USER
+Membuat pengguna baru.
+- **Method:** `POST`
+- **Endpoint:** `/users`
 
-Authenticate user dan mendapatkan token sesi.
-
-**Endpoint**
-
-```
-POST /auth
-```
-
-**Request Body**
-
+**Request Body (JSON):**
 ```json
 {
-  "email": "rangga@example.com",
-  "password": "akugila123"
+    "email": "nayla@example.com",
+    "passwordHash": "akunayla123",
+    "fullName": "Nayla Saffana",
+    "phoneNumber": "+62812726371673",
+    "role": "NURSE"
+}
+```
+
+### GET USERS
+Mengambil daftar pengguna.
+- **Method:** `GET`
+- **Endpoint:** `/users`
+
+**Query Parameters:**
+| Parameter | Type | Description | Status |
+| :--- | :--- | :--- | :--- |
+| `role` | text | Filter berdasarkan role (contoh: NURSE) | *Disabled* |
+| `name` | text | Filter berdasarkan nama (contoh: rangga) | *Disabled* |
+
+### UPDATE USER
+Memperbarui data pengguna.
+- **Method:** `PATCH`
+- **Endpoint:** `/users/:id` *(contoh: `/users/896e16ec-730a-431b-82c2-a21bf4c46cef`)*
+
+**Request Body (JSON):**
+```json
+{
+    "fullName": "Airlangga Pradana"
+}
+```
+
+### GET USER BY ID
+Mengambil data satu pengguna spesifik berdasarkan ID.
+- **Method:** `GET`
+- **Endpoint:** `/users/:id` *(contoh: `/users/f80a7c0b-b268-4172-b92b-ad5cce94a6cf`)*
+
+**Query Parameters:**
+| Parameter | Type | Description | Status |
+| :--- | :--- | :--- | :--- |
+| `role` | text | Filter berdasarkan role | *Disabled* |
+
+### DELETE USER
+Menghapus pengguna.
+- **Method:** `DELETE`
+- **Endpoint:** `/users/:id` *(contoh: `/users/21078367-aa6f-4e3c-9f3c-019ca71813c1`)*
+
+---
+
+## 2. NURSE
+
+### NEW NURSE
+Mendaftarkan perawat baru.
+- **Method:** `POST`
+- **Endpoint:** `/nurses`
+
+**Request Body (JSON):**
+```json
+{
+    "userId": "f80a7c0b-b268-4172-b92b-ad5cce94a6cf",
+    "specialization": "Caregiver",
+    "experienceYears": 3
+}
+```
+
+### GET ALL NURSES
+Mengambil daftar perawat.
+- **Method:** `GET`
+- **Endpoint:** `/nurses`
+
+**Query Parameters:**
+| Parameter | Type | Description | Status |
+| :--- | :--- | :--- | :--- |
+| `name` | text | Filter berdasarkan nama | *Disabled* |
+| `specialization` | text | Filter berdasarkan spesialisasi | *Disabled* |
+| `experienceYears`| text | Filter berdasarkan tahun pengalaman | *Disabled* |
+
+**Request Body (JSON):**
+```json
+{
+    "userId": "f80a7c0b-b268-4172-b92b-ad5cce94a6cf",
+    "specialization": "Caregiver",
+    "experienceYears": 3
+}
+```
+
+### UPDATE NURSE
+Memperbarui data perawat.
+- **Method:** `PATCH`
+- **Endpoint:** `/nurses/:id` *(contoh: `/nurses/6fa4cf92-4e51-42de-a72b-c6e73cd41e18`)*
+
+**Request Body (JSON):**
+```json
+{
+    "experienceYears": 5
+}
+```
+
+### GET ONE NURSE
+Mengambil data satu perawat spesifik.
+- **Method:** `GET`
+- **Endpoint:** `/nurses/:id` *(contoh: `/nurses/6fa4cf92-4e51-42de-a72b-c6e73cd41e18`)*
+
+**Request Body (JSON):**
+```json
+{
+    "userId": "f80a7c0b-b268-4172-b92b-ad5cce94a6cf",
+    "specialization": "Caregiver",
+    "experienceYears": 3
+}
+```
+
+### DELETE NURSE
+Menghapus perawat.
+- **Method:** `DELETE`
+- **Endpoint:** `/nurses/:id` *(contoh: `/nurses/6fa4cf92-4e51-42de-a72b-c6e73cd41e18`)*
+
+**Request Body (JSON):**
+```json
+{
+    "experienceYears": 5
 }
 ```
 
 ---
 
-# Users
+## 3. Patient
 
-## Create User
+### NEW PATIENT
+Menambahkan pasien baru.
+- **Method:** `POST`
+- **Endpoint:** `/patients`
 
-```
-POST /users
-```
-
-**Request Body**
-
+**Request Body (JSON):**
 ```json
 {
-  "email": "nayla@example.com",
-  "passwordHash": "akunayla123",
-  "fullName": "Nayla Saffana",
-  "phoneNumber": "+62812726371673",
-  "role": "NURSE"
+    "familyId": "896e16ec-730a-431b-82c2-a21bf4c46cef",
+    "name": "Daniel Budianto",
+    "dateOfBirth": "2004-10-23",
+    "weight": 65,
+    "height": 178,
+    "medicalHistory": [
+        "flu",
+        "cold"
+    ]
 }
 ```
 
----
+### GET ALL PATIENTS
+Mengambil daftar pasien.
+- **Method:** `GET`
+- **Endpoint:** `/patients`
 
-## Get Users
+### GET SINGLE PATIENT
+Mengambil data spesifik pasien berdasarkan ID.
+- **Method:** `GET`
+- **Endpoint:** `/patients/:id` *(contoh: `/patients/21078367-aa6f-4e3c-9f3c-019ca71813c1`)*
 
-```
-GET /users
-```
+### UPDATE PATIENT
+Memperbarui data pasien.
+- **Method:** `PATCH`
+- **Endpoint:** `/patients/:id` *(contoh: `/patients/21078367-aa6f-4e3c-9f3c-019ca71813c1`)*
 
-**Query Parameters**
-
-| Parameter | Type   | Description             |
-| --------- | ------ | ----------------------- |
-| role      | string | Filter berdasarkan role |
-| name      | string | Filter berdasarkan nama |
-
-**Example**
-
-```
-GET /users?role=NURSE
-```
-
----
-
-## Get User By ID
-
-```
-GET /users/:id
-```
-
-**Example**
-
-```
-GET /users/f80a7c0b-b268-4172-b92b-ad5cce94a6cf
-```
-
----
-
-## Update User
-
-```
-PATCH /users/:id
-```
-
-**Request Body**
-
+**Request Body (JSON):**
 ```json
 {
-  "fullName": "Airlangga Pradana"
+    "name": "Daniel Hartanto"
 }
 ```
 
----
-
-## Delete User
-
-```
-DELETE /users/:id
-```
+### DELETE PATIENT
+Menghapus data pasien.
+- **Method:** `DELETE`
+- **Endpoint:** `/patients/:id` *(contoh: `/patients/21078367-aa6f-4e3c-9f3c-019ca71813c1`)*
 
 ---
 
-# Nurses
+## 4. Appointments
 
-## Create Nurse
+### ADD APPOINTMENT
+Membuat janji temu baru.
+- **Method:** `POST`
+- **Endpoint:** `/appointments`
 
-```
-POST /nurses
-```
-
-**Request Body**
-
+**Request Body (JSON):**
 ```json
 {
-  "userId": "f80a7c0b-b268-4172-b92b-ad5cce94a6cf",
-  "specialization": "Caregiver",
-  "experienceYears": 3
+    "patientId": "21078367-aa6f-4e3c-9f3c-019ca71813c1",
+    "nurseId": "6fa4cf92-4e51-42de-a72b-c6e73cd41e18",
+    "status": "PENDING",
+    "serviceType": "LIVE_IN",
+    "totalPrice": 75000,
+    "dueDate": "2026-03-17"
 }
 ```
 
----
+### GET ALL APPOINTMENTS
+Mengambil daftar janji temu.
+- **Method:** `GET`
+- **Endpoint:** `/appointments`
 
-## Get All Nurses
+### GET SINGLE APPOINTMENT
+Mengambil detail satu janji temu.
+- **Method:** `GET`
+- **Endpoint:** `/appointments/:id` *(contoh: `/appointments/akdusagdysgadsadsad`)*
 
-```
-GET /nurses
-```
+### UPDATE APPOINTMENT
+Memperbarui status janji temu.
+- **Method:** `PATCH`
+- **Endpoint:** `/appointments/:id` *(contoh: `/appointments/akdusagdysgadsadsad`)*
 
-**Query Parameters**
-
-| Parameter       | Type   |
-| --------------- | ------ |
-| name            | string |
-| specialization  | string |
-| experienceYears | number |
-
-**Example**
-
-```
-GET /nurses?specialization=Caregiver
-```
-
----
-
-## Get Nurse By ID
-
-```
-GET /nurses/:id
-```
-
----
-
-## Update Nurse
-
-```
-PATCH /nurses/:id
-```
-
-**Request Body**
-
+**Request Body (JSON):**
 ```json
 {
-  "experienceYears": 5
+    "status": "CONFIRMED"
 }
 ```
 
----
-
-## Delete Nurse
-
-```
-DELETE /nurses/:id
-```
+### DELETE APPOINTMENT
+Menghapus janji temu.
+- **Method:** `DELETE`
+- **Endpoint:** `/appointments/:id` *(contoh: `/appointments/akdusagdysgadsadsad`)*
 
 ---
 
-# Patients
+## 5. Activity Log
 
-## Create Patient
+### ADD NEW LOG
+Menambahkan catatan aktivitas baru.
+- **Method:** `POST`
+- **Endpoint:** `/activitylog`
 
-```
-POST /patients
-```
-
-**Request Body**
-
+**Request Body (JSON):**
 ```json
 {
-  "familyId": "896e16ec-730a-431b-82c2-a21bf4c46cef",
-  "name": "Daniel Budianto",
-  "dateOfBirth": "2004-10-23",
-  "weight": 65,
-  "height": 178,
-  "medicalHistory": [
-    "flu",
-    "cold"
-  ]
+    "careLogId": "amdishaudhasdsad",
+    "notes": "This is a test note"
 }
 ```
 
----
+### UPDATE LOG
+Memperbarui catatan aktivitas.
+- **Method:** `PATCH`
+- **Endpoint:** `/activitylog/:id` *(contoh: `/activitylog/snadaihdiasd`)*
 
-## Get All Patients
-
-```
-GET /patients
-```
-
----
-
-## Get Patient By ID
-
-```
-GET /patients/:id
-```
-
----
-
-## Update Patient
-
-```
-PATCH /patients/:id
-```
-
----
-
-## Delete Patient
-
-```
-DELETE /patients/:id
-```
-
----
-
-# Appointments
-
-## Create Appointment
-
-```
-POST /appointments
-```
-
-**Request Body**
-
+**Request Body (JSON):**
 ```json
 {
-  "patientId": "21078367-aa6f-4e3c-9f3c-019ca71813c1",
-  "nurseId": "6fa4cf92-4e51-42de-a72b-c6e73cd41e18",
-  "status": "PENDING",
-  "serviceType": "LIVE_IN",
-  "totalPrice": 75000,
-  "dueDate": "2026-03-17"
+    "notes": "This request is used to update the activity log for a specific user. The request body includes the user ID and the new activity log entry."
 }
 ```
 
----
-
-## Get All Appointments
-
-```
-GET /appointments
-```
+### DELETE LOG
+Menghapus catatan aktivitas.
+- **Method:** `DELETE`
+- **Endpoint:** `/activitylog/:id` *(contoh: `/activitylog/snadaihdiasd`)*
 
 ---
 
-## Get Appointment By ID
+## 6. Auth
 
+### LOGIN
+Otentikasi pengguna untuk mendapatkan akses.
+- **Method:** `POST`
+- **Endpoint:** `/auth`
+
+**Request Body (JSON):**
+```json
+{
+    "email": "rangga@example.com",
+    "password": "akugila123"
+}
 ```
-GET /appointments/:id
-```
-
----
-
-## Update Appointment
-
-```
-PATCH /appointments/:id
-```
-
----
-
-## Delete Appointment
-
-```
-DELETE /appointments/:id
-```
-
----
-
-# Activity Log
-
-## Add Activity Log
-
-```
-POST /activitylog
-```
-
----
-
-## Update Activity Log
-
-```
-PATCH /activitylog/:id
-```
-
----
-
-## Delete Activity Log
-
-```
-DELETE /activitylog/:id
-```
-
----
