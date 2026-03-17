@@ -33,14 +33,21 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query('role') role?: string, @Query('name') name?: string) {
+  async findAll(
+    @Res() res: Response,
+    @Query('role') role?: string,
+    @Query('name') name?: string,
+  ) {
     if (role && !Object.values(Role).includes(role as Role)) {
       throw new BadRequestException({
         statusCode: 400,
         message: `Invalid role. Valid values: ${Object.values(Role).join(', ')}`,
       });
     }
-    return this.usersService.findAll(role as Role | undefined, name);
+    return res.status(200).json({
+      message: 'Users found successfully',
+      data: await this.usersService.findAll(role as Role | undefined, name),
+    });
   }
 
   @Get(':id')
