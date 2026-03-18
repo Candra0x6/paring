@@ -17,10 +17,20 @@ import { UpdateUserDto, UpdateUserSchema } from './dto/update-user.dto';
 import { Response } from 'express';
 import { Role } from 'generated/prisma/enums';
 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
+
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({ status: 201, description: 'User created successfully' })
   @Post()
   async create(
     @Body(new ZodValidationPipe(CreateUserSchema)) createUserDto: CreateUserDto,
@@ -32,6 +42,10 @@ export class UsersController {
     });
   }
 
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'Users found successfully' })
+  @ApiQuery({ name: 'role', required: false, enum: ['ADMIN', 'FAMILY', 'NURSE'] })
+  @ApiQuery({ name: 'name', required: false, description: 'Search by full name' })
   @Get()
   async findAll(
     @Res() res: Response,
@@ -50,6 +64,8 @@ export class UsersController {
     });
   }
 
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiResponse({ status: 200, description: 'User found successfully' })
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     return res.status(200).json({
@@ -58,6 +74,8 @@ export class UsersController {
     });
   }
 
+  @ApiOperation({ summary: 'Update user by ID' })
+  @ApiResponse({ status: 200, description: 'User updated successfully' })
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -71,6 +89,8 @@ export class UsersController {
     });
   }
 
+  @ApiOperation({ summary: 'Delete user by ID' })
+  @ApiResponse({ status: 200, description: 'User removed successfully' })
   @Delete(':id')
   async remove(@Param('id') id: string, @Res() res: Response) {
     const removedUser = await this.usersService.remove(id);

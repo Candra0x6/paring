@@ -9,6 +9,7 @@ import {
   Res,
   Query,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
 import {
   CreateAppointmentDto,
@@ -22,11 +23,16 @@ import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { Response } from 'express';
 import { AppointmentStatus } from 'generated/prisma/enums';
 
+@ApiTags('Appointments')
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new appointment' })
+  @ApiBody({ type: CreateAppointmentDto })
+  @ApiResponse({ status: 201, description: 'Appointment created successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   async create(
     @Body(new ZodValidationPipe(createAppointmentSchema))
     createAppointmentDto: CreateAppointmentDto,
@@ -40,6 +46,10 @@ export class AppointmentsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Retrieve all appointments' })
+  @ApiQuery({ name: 'status', enum: AppointmentStatus, required: false, description: 'Filter by appointment status' })
+  @ApiQuery({ name: 'dueDate', required: false, description: 'Filter by due date (YYYY-MM-DD)' })
+  @ApiResponse({ status: 200, description: 'Appointments retrieved successfully' })
   async findAll(
     @Res() res: Response,
     @Query('status') status?: AppointmentStatus,
@@ -53,6 +63,10 @@ export class AppointmentsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a single appointment by ID' })
+  @ApiParam({ name: 'id', description: 'Appointment UUID' })
+  @ApiResponse({ status: 200, description: 'Appointment retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
   async findOne(@Param('id') id: string, @Res() res: Response) {
     const result = await this.appointmentsService.findOne(id);
     return res.status(200).json({
@@ -62,6 +76,11 @@ export class AppointmentsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update an appointment' })
+  @ApiParam({ name: 'id', description: 'Appointment UUID' })
+  @ApiBody({ type: UpdateAppointmentDto })
+  @ApiResponse({ status: 200, description: 'Appointment updated successfully' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateAppointmentSchema))
@@ -79,6 +98,10 @@ export class AppointmentsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete an appointment' })
+  @ApiParam({ name: 'id', description: 'Appointment UUID' })
+  @ApiResponse({ status: 200, description: 'Appointment deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
   async remove(@Param('id') id: string, @Res() res: Response) {
     const result = await this.appointmentsService.remove(id);
     return res.status(200).json({

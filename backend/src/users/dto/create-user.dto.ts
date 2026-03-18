@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { z } from 'zod';
 
 export const RoleEnum = z.enum(['ADMIN', 'FAMILY', 'NURSE']);
@@ -22,4 +23,35 @@ export const CreateUserSchema = z.object({
   role: RoleEnum.optional().default('FAMILY'),
 });
 
-export type CreateUserDto = z.infer<typeof CreateUserSchema>;
+export class CreateUserDto {
+  @ApiProperty({
+    example: 'nayla@example.com',
+    description: 'Email address of the user',
+  })
+  email: string;
+
+  @ApiProperty({
+    example: 'akunayla123',
+    description: 'Hashed password or plain password (depending on logic)',
+  })
+  passwordHash: string;
+
+  @ApiProperty({
+    example: 'Nayla Saffana',
+    description: 'Full name of the user',
+  })
+  fullName: string;
+
+  @ApiProperty({
+    example: '+628127381286',
+    description: 'Phone number in Indonesian format',
+  })
+  phoneNumber: string;
+
+  @ApiProperty({
+    enum: ['ADMIN', 'FAMILY', 'NURSE'],
+    default: 'FAMILY',
+    description: 'Role of the user',
+  })
+  role?: 'ADMIN' | 'FAMILY' | 'NURSE';
+}

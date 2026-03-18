@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { z } from 'zod';
 
 export const createActivitylogSchema = z.object({
@@ -5,4 +6,16 @@ export const createActivitylogSchema = z.object({
   careLogId: z.uuid('careLogId must be a valid UUID'),
 });
 
-export type CreateActivitylogDto = z.infer<typeof createActivitylogSchema>;
+export class CreateActivitylogDto {
+  @ApiProperty({
+    example: 'Patient completed morning exercises',
+    description: 'Detailed assessment or observation notes',
+  })
+  notes: string;
+
+  @ApiProperty({
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'UUID of the related care log',
+  })
+  careLogId: string;
+}

@@ -1,17 +1,32 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, createAuthDtoSchema } from './dto/create-auth.dto';
 import { Response } from 'express';
 import { env } from 'src/env';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({
+    summary: 'Login',
+    description: 'Login to the application',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+  })
   @Post()
   async create(
-    @Body() createAuthDto: CreateAuthDto,
     @Res({ passthrough: true }) res: Response,
+    @Body(new ZodValidationPipe(createAuthDtoSchema))
+    createAuthDto: CreateAuthDto,
   ) {
     const token = await this.authService.create(createAuthDto);
 

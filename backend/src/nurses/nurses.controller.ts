@@ -16,10 +16,20 @@ import { UpdateNurseDto, UpdateNurseSchema } from './dto/update-nurse.dto';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { Response } from 'express';
 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
+
+@ApiTags('Nurses')
 @Controller('nurses')
 export class NursesController {
   constructor(private readonly nursesService: NursesService) {}
 
+  @ApiOperation({ summary: 'Create a new nurse' })
+  @ApiResponse({ status: 201, description: 'Nurse created successfully' })
   @Post()
   async create(
     @Res() res: Response,
@@ -33,6 +43,11 @@ export class NursesController {
     });
   }
 
+  @ApiOperation({ summary: 'Get all nurses' })
+  @ApiResponse({ status: 200, description: 'Nurses found successfully' })
+  @ApiQuery({ name: 'name', required: false, description: 'Nurse name' })
+  @ApiQuery({ name: 'specialization', required: false, description: 'Specialization' })
+  @ApiQuery({ name: 'experienceYears', required: false, description: 'Years of experience' })
   @Get()
   async findAll(
     @Res() res: Response,
@@ -53,6 +68,8 @@ export class NursesController {
     });
   }
 
+  @ApiOperation({ summary: 'Get nurse by ID' })
+  @ApiResponse({ status: 200, description: 'Nurse found successfully' })
   @Get(':id')
   async findOne(@Res() res: Response, @Param('id') id: string) {
     const result = await this.nursesService.findOne(id);
@@ -62,6 +79,8 @@ export class NursesController {
     });
   }
 
+  @ApiOperation({ summary: 'Update nurse by ID' })
+  @ApiResponse({ status: 200, description: 'Nurse updated successfully' })
   @Patch(':id')
   async update(
     @Res() res: Response,
@@ -76,6 +95,8 @@ export class NursesController {
     });
   }
 
+  @ApiOperation({ summary: 'Delete nurse by ID' })
+  @ApiResponse({ status: 200, description: 'Nurse removed successfully' })
   @Delete(':id')
   async remove(@Res() res: Response, @Param('id') id: string) {
     const result = await this.nursesService.remove(id);
