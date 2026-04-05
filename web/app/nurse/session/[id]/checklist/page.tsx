@@ -147,7 +147,7 @@ export default function NurseChecklistPage() {
       <div className="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-xl border-t border-slate-100 p-4 pb-safe z-50">
          <div className="max-w-3xl mx-auto">
             <Button 
-               onClick={() => window.location.href='/dashboard'}
+               onClick={() => window.location.href='/nurse/dashboard'}
                className={`w-full h-14 justify-center text-lg rounded-2xl shadow-lg transition-all
                   ${(tasks.bp && tasks.sugar) 
                     ? 'bg-[#37A47C] hover:bg-[#1B4332] shadow-[#37A47C]/20 text-white' 

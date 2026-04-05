@@ -79,7 +79,7 @@ export default function LandingPage() {
             <button onClick={() => setIsBookingModalOpen(true)} className="hidden md:flex text-slate-600 font-medium hover:text-[#37A47C] transition-colors">
               Konsultasi
             </button>
-            <Button onClick={() => window.location.href='/dashboard'} variant="primary" className="rounded-full shadow-xl shadow-[#37A47C]/20 border border-[#37A47C]/20">
+            <Button onClick={() => window.location.href='/login'} variant="primary" className="rounded-full shadow-xl shadow-[#37A47C]/20 border border-[#37A47C]/20">
               Masuk
             </Button>
           </div>
@@ -271,8 +271,14 @@ export default function LandingPage() {
               </Button>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
+                {
+                  title: "Non-medis",
+                  price: "Mulai Rp 50rb",
+                  desc: "Layanan pendampingan non-medis untuk aktivitas harian, dukungan emosional, dan kebugaran lansia.",
+                  items: ["ADL (Makan, Mandi) - Rp 50rb", "Emotional Support - Rp 100rb", "Physical Activity - Rp 150rb"]
+                },
                 {
                   title: "Visit Care",
                   price: "Mulai Rp 150rb / kunjungan",
@@ -288,7 +294,7 @@ export default function LandingPage() {
                 },
                 {
                   title: "Live-In Care",
-                  price: "Mulai Rp 4.5jt / bulan",
+                  price: "Mulai Rp 3.5jt / bulan",
                   desc: "Pendampingan penuh 24 jam dengan perawat yang tinggal bersama pasien di rumah.",
                   items: ["Standby 24 Jam", "Perawatan Menyeluruh", "Cocok untuk Bedridden"]
                 }

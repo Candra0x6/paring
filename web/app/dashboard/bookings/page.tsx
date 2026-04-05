@@ -35,6 +35,17 @@ export default function BookingList() {
     ],
     selesai: [
       {
+        id: '4',
+        invoice: '#BK-PAR-8110',
+        status: 'Selesai',
+        statusColor: 'bg-slate-100 text-slate-600 border-slate-200',
+        nurse: 'Ners Rina Suryani',
+        service: 'Non-medis',
+        patient: 'Opa Sastro',
+        date: '12 Ags 2026',
+        hasPhoto: false
+      },
+      {
         id: '3',
         invoice: '#BK-PAR-7982',
         status: 'Selesai',

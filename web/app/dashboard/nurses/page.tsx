@@ -16,7 +16,7 @@ export default function NurseSearchPage() {
       name: 'Ners Rina Suryani',
       rating: 4.9,
       specialty: 'Spesialis Penyakit Dalam',
-      services: ['Visit', 'Live-Out'],
+      services: ['Visit Care', 'Live-Out Care'],
       location: 'Solo',
       isRecommendation: true,
       sessions: '124'
@@ -26,7 +26,7 @@ export default function NurseSearchPage() {
       name: 'Ners Budiawan',
       rating: 4.8,
       specialty: 'Perawatan Geriatri',
-      services: ['Live-In'],
+      services: ['Live-In Care'],
       location: 'Jakarta Selatan',
       isRecommendation: false,
       sessions: '120+'
@@ -36,10 +36,30 @@ export default function NurseSearchPage() {
       name: 'Ners Siti Aisyah',
       rating: 5.0,
       specialty: 'Perawatan Pasca Stroke',
-      services: ['Visit', 'Live-Out'],
+      services: ['Visit Care', 'Live-Out Care'],
       location: 'Jakarta Timur',
       isRecommendation: false,
       sessions: '80+'
+    },
+    {
+      id: 4,
+      name: 'Siti Aminah',
+      rating: 4.7,
+      specialty: 'Pendamping Lansia (Non-medis)',
+      services: ['Non-medis'],
+      location: 'Solo',
+      isRecommendation: false,
+      sessions: '45+'
+    },
+    {
+      id: 5,
+      name: 'Bambang Heru',
+      rating: 4.8,
+      specialty: 'Pendamping & Teman Ngobrol',
+      services: ['Non-medis'],
+      location: 'Sukoharjo',
+      isRecommendation: false,
+      sessions: '30+'
     }
   ];
 
@@ -75,7 +95,7 @@ export default function NurseSearchPage() {
       </div>
 
       <div className="flex overflow-x-auto pb-4 mb-4 gap-3 no-scrollbar -mx-6 px-6 [&::-webkit-scrollbar]:hidden">
-        {['Semua', 'Visit', 'Live-Out', 'Live-In'].map((filter) => (
+        {['Semua', 'Visit Care', 'Live-Out Care', 'Live-In Care', 'Non-medis'].map((filter) => (
           <button 
             key={filter}
             onClick={() => setActiveFilter(filter)}

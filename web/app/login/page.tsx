@@ -6,6 +6,17 @@ import { Input } from '@/components/ui/Input';
 import { Heart, Mail, Lock, ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
+  const handleLogin = () => {
+    // In a real app, we would call the login API here.
+    // For now, we read from localStorage or default to PATIENT.
+    const storedRole = typeof window !== 'undefined' ? localStorage.getItem('userRole') || 'PATIENT' : 'PATIENT';
+    if (storedRole === 'NURSE') {
+      window.location.href = '/nurse/dashboard';
+    } else {
+      window.location.href = '/dashboard';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FBF9F6] flex flex-col font-sans">
       <div className="flex-1 max-w-md w-full mx-auto px-6 py-8 flex flex-col justify-center">
@@ -22,11 +33,11 @@ export default function LoginPage() {
         <form className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Email</label>
-            <Input 
+            <Input
               type="email"
               icon={<Mail size={18} />}
               placeholder="Email Anda"
-              required 
+              required
             />
           </div>
 
@@ -37,25 +48,26 @@ export default function LoginPage() {
                 Lupa Sandi?
               </Link>
             </div>
-            <Input 
+            <Input
               type="password"
               icon={<Lock size={18} />}
               placeholder="Kata Sandi Anda"
-              required 
+              required
             />
           </div>
 
           <div className="pt-8">
-            <Button type="button" onClick={() => window.location.href='/dashboard'} className="w-full h-14 justify-center text-lg bg-[#37A47C] hover:bg-[#1B4332] rounded-2xl shadow-lg shadow-[#37A47C]/20">
+            <Button type="button" onClick={handleLogin} className="w-full h-14 justify-center text-lg bg-[#37A47C] hover:bg-[#1B4332] rounded-2xl shadow-lg shadow-[#37A47C]/20">
               Masuk
             </Button>
-            
+
             <p className="text-center text-sm text-slate-500 mt-8 font-light">
               Belum punya akun?{' '}
               <Link href="/register" className="text-[#37A47C] font-bold hover:underline">
-                Daftar sekarang
+                Daftar
               </Link>
             </p>
+
           </div>
         </form>
       </div>

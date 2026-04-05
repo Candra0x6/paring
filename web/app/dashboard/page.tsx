@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Bell, UserPlus, HeartPulse, FileText, Activity, AlertCircle, ArrowRight, Clock, X, PhoneCall } from 'lucide-react';
+import { Bell, UserPlus, HeartPulse, FileText, Activity, AlertCircle, ArrowRight, Clock, X, PhoneCall, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardHome() {
   // State for demonstration purposes
   const [hasActiveSession, setHasActiveSession] = useState(true);
+  const [activeSessionType, setActiveSessionType] = useState<'medical' | 'non-medical'>('medical');
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
 
   return (
@@ -83,12 +84,22 @@ export default function DashboardHome() {
         </div>
         <div className="flex gap-3">
           {/* Debug Toggle Control */}
-          <button
-            onClick={() => setHasActiveSession(!hasActiveSession)}
-            className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-slate-200 text-slate-600 rounded-lg"
-          >
-            Toggle Sesi
-          </button>
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => setHasActiveSession(!hasActiveSession)}
+              className="text-[8px] font-bold uppercase tracking-widest px-2 py-1 bg-slate-200 text-slate-600 rounded-lg"
+            >
+              Toggle Sesi {hasActiveSession ? 'OFF' : 'ON'}
+            </button>
+            {hasActiveSession && (
+              <button
+                onClick={() => setActiveSessionType(activeSessionType === 'medical' ? 'non-medical' : 'medical')}
+                className="text-[8px] font-bold uppercase tracking-widest px-2 py-1 bg-emerald-100 text-[#37A47C] rounded-lg"
+              >
+                {activeSessionType === 'medical' ? 'Set Non-medis' : 'Set Medis'}
+              </button>
+            )}
+          </div>
           <button className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center relative text-slate-600 hover:bg-slate-50 transition-colors">
             <Bell size={20} />
             <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
@@ -135,21 +146,27 @@ export default function DashboardHome() {
           <div className="bg-[#37A47C] rounded-[2rem] p-1 shadow-lg shadow-[#37A47C]/20 relative overflow-hidden group hover:scale-[1.02] transition-transform">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-2xl opacity-50"></div>
 
-            <Link href="/dashboard/monitoring/1" className="block p-5 bg-[#37A47C] rounded-[1.8rem] relative z-10">
+            <Link href={`/dashboard/monitoring/1?type=${activeSessionType}`} className="block p-5 bg-[#37A47C] rounded-[1.8rem] relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2 bg-emerald-700/50 px-3 py-1.5 rounded-full border border-white/10">
                   <div className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></div>
-                  <span className="text-white text-[10px] font-bold uppercase tracking-widest">Sedang Berlangsung</span>
+                  <span className="text-white text-[10px] font-bold uppercase tracking-widest">
+                    {activeSessionType === 'medical' ? 'Visit Care' : 'Non-Medis'}
+                  </span>
                 </div>
-                <span className="text-emerald-100 text-xs font-bold flex items-center gap-1"><Clock size={12} /> 09:00 - 12:00</span>
+                <span className="text-emerald-100 text-xs font-bold flex items-center gap-1">
+                  <Clock size={12} /> {activeSessionType === 'medical' ? '09:00 - 12:00' : '14:00 - 16:00'}
+                </span>
               </div>
 
               <div className="flex gap-4 items-center">
-                <div className="w-14 h-14 bg-white/20 rounded-2xl overflow-hidden shrink-0 relative">
-                  <div className="absolute inset-0 bg-white/30 backdrop-blur-sm"></div>
+                <div className="w-14 h-14 bg-white/20 rounded-2xl overflow-hidden shrink-0 relative flex items-center justify-center text-white font-serif font-bold text-xl">
+                  {activeSessionType === 'medical' ? 'K' : 'S'}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-serif text-xl font-bold text-white mb-0.5">Ibu Kartini</h3>
+                  <h3 className="font-serif text-xl font-bold text-white mb-0.5">
+                    {activeSessionType === 'medical' ? 'Ibu Kartini' : 'Opa Sastro'}
+                  </h3>
                   <p className="text-sm text-emerald-100 font-medium tracking-wide">Bersama Ners Rina Suryani</p>
                 </div>
                 <div className="w-10 h-10 bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -159,19 +176,50 @@ export default function DashboardHome() {
             </Link>
           </div>
         ) : (
-          /* Empty State No Active Session */
-          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center py-10">
-            <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-4">
-              <Activity size={32} />
+          <div className="space-y-4">
+            {/* Recently Completed Session Card */}
+            <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                  <CheckCircle2 size={12} className="text-[#37A47C]" />
+                  <span className="text-slate-600 text-[10px] font-bold uppercase tracking-widest">Sesi Selesai</span>
+                </div>
+                <span className="text-slate-400 text-xs font-bold">14:00 - 16:00 WIB</span>
+              </div>
+
+              <div className="flex gap-4 items-center mb-6">
+                <div className="w-14 h-14 bg-[#1B4332] rounded-2xl flex items-center justify-center text-white shrink-0 relative font-serif font-bold text-xl">
+                  S
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-serif text-xl font-bold text-[#1B4332] mb-0.5">Opa Sastro</h3>
+                  <p className="text-sm text-slate-500 font-medium tracking-wide">Pendampingan Non-medis Selesai</p>
+                </div>
+              </div>
+
+              <Link 
+                href="/dashboard/sessions/4/report?type=non-medical" 
+                className="w-full h-12 bg-[#E2F1EC] text-[#37A47C] hover:bg-[#37A47C] hover:text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2 group-hover:shadow-lg group-hover:shadow-[#37A47C]/20"
+              >
+                <FileText size={18} />
+                Lihat Laporan Sesi
+              </Link>
             </div>
-            <h3 className="font-bold text-slate-700 mb-2">Tidak ada sesi aktif</h3>
-            <p className="text-sm text-slate-500 font-light max-w-[200px]">Anda belum memiliki jadwal kunjungan perawat hari ini.</p>
-            <button
-              onClick={() => window.location.href = '/dashboard/nurses'}
-              className="mt-4 text-[#37A47C] font-bold text-sm bg-[#E2F1EC] px-4 py-2 rounded-xl"
-            >
-              Cari Perawat
-            </button>
+
+            {/* Empty State No Active Session */}
+            <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center py-10 opacity-60">
+              <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-4">
+                <Activity size={32} />
+              </div>
+              <h3 className="font-bold text-slate-700 mb-2">Tidak ada sesi aktif</h3>
+              <p className="text-sm text-slate-500 font-light max-w-[200px]">Cari perawat terbaik untuk kebutuhan medis lansia Anda.</p>
+              <button
+                onClick={() => window.location.href = '/dashboard/nurses'}
+                className="mt-4 text-[#37A47C] font-bold text-sm bg-[#E2F1EC] px-4 py-2 rounded-xl"
+              >
+                Cari Perawat
+              </button>
+            </div>
           </div>
         )}
       </div>
