@@ -1,20 +1,55 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Heart, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { Heart, Mail, Lock } from 'lucide-react';
+import { useLogin } from '@/lib/hooks/useApi';
+import { useAuthStore } from '@/lib/auth-context';
+import { loginSchema, type LoginFormData } from '@/lib/validation';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
-  const handleLogin = () => {
-    // In a real app, we would call the login API here.
-    // For now, we read from localStorage or default to PATIENT.
-    const storedRole = typeof window !== 'undefined' ? localStorage.getItem('userRole') || 'PATIENT' : 'PATIENT';
-    if (storedRole === 'NURSE') {
-      window.location.href = '/nurse/dashboard';
-    } else {
-      window.location.href = '/dashboard';
-    }
+  const router = useRouter();
+  const { setAuth } = useAuthStore();
+  const { mutate: login, isPending } = useLogin();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = (data: LoginFormData) => {
+    login(data, {
+      onSuccess: (response: any) => {
+        // Extract user info from response (backend returns user data)
+        const userRole = response.data?.user?.role || 'FAMILY';
+        const userId = response.data?.user?.id || 'unknown';
+        const email = response.data?.user?.email || data.email;
+
+        // Store auth state
+        setAuth(userRole, userId, email);
+        toast.success('Login berhasil!');
+
+        // Redirect based on role
+        if (userRole === 'NURSE') {
+          router.push('/nurse/dashboard');
+        } else {
+          router.push('/dashboard');
+        }
+      },
+      onError: (error: any) => {
+        const errorMsg =
+          error.response?.data?.message || 'Email atau password salah';
+        toast.error(errorMsg);
+      },
+    });
   };
 
   return (
@@ -25,26 +60,40 @@ export default function LoginPage() {
           <div className="w-16 h-16 bg-[#37A47C] rounded-2xl flex items-center justify-center text-white shadow-lg mx-auto mb-6 transform -rotate-6">
             <Heart size={32} />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-[#1B4332] mb-2">Selamat Datang</h1>
-          <p className="text-slate-500 font-light text-sm">Masuk ke akun PARING Anda.</p>
+          <h1 className="font-serif text-3xl font-bold text-[#1B4332] mb-2">
+            Selamat Datang
+          </h1>
+          <p className="text-slate-500 font-light text-sm">
+            Masuk ke akun PARING Anda.
+          </p>
         </div>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">Email</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">
+              Email
+            </label>
             <Input
               type="email"
               icon={<Mail size={18} />}
               placeholder="Email Anda"
-              required
+              {...register('email')}
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+            )}
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5 px-1">
-              <label className="block text-xs font-bold text-slate-700">Kata Sandi</label>
-              <Link href="/forgot-password" className="text-xs font-medium text-[#37A47C] hover:underline">
+              <label className="block text-xs font-bold text-slate-700">
+                Kata Sandi
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-xs font-medium text-[#37A47C] hover:underline"
+              >
                 Lupa Sandi?
               </Link>
             </div>
@@ -52,22 +101,33 @@ export default function LoginPage() {
               type="password"
               icon={<Lock size={18} />}
               placeholder="Kata Sandi Anda"
-              required
+              {...register('password')}
             />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <div className="pt-8">
-            <Button type="button" onClick={handleLogin} className="w-full h-14 justify-center text-lg bg-[#37A47C] hover:bg-[#1B4332] rounded-2xl shadow-lg shadow-[#37A47C]/20">
-              Masuk
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full h-14 justify-center text-lg bg-[#37A47C] hover:bg-[#1B4332] rounded-2xl shadow-lg shadow-[#37A47C]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPending ? 'Memproses...' : 'Masuk'}
             </Button>
 
             <p className="text-center text-sm text-slate-500 mt-8 font-light">
               Belum punya akun?{' '}
-              <Link href="/register" className="text-[#37A47C] font-bold hover:underline">
+              <Link
+                href="/register"
+                className="text-[#37A47C] font-bold hover:underline"
+              >
                 Daftar
               </Link>
             </p>
-
           </div>
         </form>
       </div>

@@ -2,65 +2,56 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Calendar, CheckCircle2, ChevronRight, FileText, Search, Activity } from 'lucide-react';
+import { Calendar, CheckCircle2, ChevronRight, FileText, Loader } from 'lucide-react';
+import { useAppointments } from '@/lib/hooks/useApi';
+
+const STATUS_MAP: Record<string, string[]> = {
+  aktif: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'],
+  selesai: ['COMPLETED'],
+  dibatalkan: ['CANCELLED']
+};
+
+const STATUS_LABELS: Record<string, { label: string; color: string }> = {
+  PENDING: { label: 'Menunggu Pembayaran', color: 'bg-[#ff4d4f]/10 text-red-600 border-[#ff4d4f]/20' },
+  CONFIRMED: { label: 'Terkonfirmasi', color: 'bg-[#E2F1EC] text-[#37A47C] border-[#37A47C]/20' },
+  IN_PROGRESS: { label: 'Sedang Berlangsung', color: 'bg-blue-50 text-blue-600 border-blue-200' },
+  COMPLETED: { label: 'Selesai', color: 'bg-slate-100 text-slate-600 border-slate-200' },
+  CANCELLED: { label: 'Dibatalkan', color: 'bg-red-50 text-red-600 border-red-200' }
+};
 
 export default function BookingList() {
   const [activeTab, setActiveTab] = useState('aktif');
+  const { data: appointmentsData, isLoading } = useAppointments();
 
-  // Hardcoded bookings for different states
-  const bookings = {
-    aktif: [
-      {
-        id: '1',
-        invoice: '#BK-PAR-8092',
-        status: 'Menunggu Pembayaran',
-        statusColor: 'bg-[#ff4d4f]/10 text-red-600 border-[#ff4d4f]/20',
-        nurse: 'Ners Rina Suryani',
-        service: 'Visit Care',
-        patient: 'Ibu Kartini',
-        date: '12 Ags 2026, 09:00 WIB',
-        hasPhoto: true
-      },
-      {
-        id: '2',
-        invoice: '#BK-PAR-8105',
-        status: 'Terkonfirmasi',
-        statusColor: 'bg-[#E2F1EC] text-[#37A47C] border-[#37A47C]/20',
-        nurse: 'Ners Siti Aisyah',
-        service: 'Live-Out Care',
-        patient: 'Bapak Bardi',
-        date: '15 Ags 2026, 08:00 - 16:00',
-        hasPhoto: false
-      }
-    ],
-    selesai: [
-      {
-        id: '4',
-        invoice: '#BK-PAR-8110',
-        status: 'Selesai',
-        statusColor: 'bg-slate-100 text-slate-600 border-slate-200',
-        nurse: 'Ners Rina Suryani',
-        service: 'Non-medis',
-        patient: 'Opa Sastro',
-        date: '12 Ags 2026',
-        hasPhoto: false
-      },
-      {
-        id: '3',
-        invoice: '#BK-PAR-7982',
-        status: 'Selesai',
-        statusColor: 'bg-slate-100 text-slate-600 border-slate-200',
-        nurse: 'Ners Budiawan',
-        service: 'Live-In Care',
-        patient: 'Ibu Kartini',
-        date: '01 Ags 2026',
-        hasPhoto: true
-      }
-    ],
-    dibatalkan: []
+  const appointments = appointmentsData?.data || [];
+  
+  // Filter appointments by tab status
+  const filteredAppointments = appointments.filter((apt: any) => 
+    STATUS_MAP[activeTab]?.includes(apt.status)
+  );
+
+  const getStatusInfo = (status: string) => {
+    return STATUS_LABELS[status] || { label: status, color: 'bg-slate-100 text-slate-600 border-slate-200' };
   };
 
-  const currentBookings = bookings[activeTab as keyof typeof bookings];
+  const formatDate = (date: string | null) => {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="px-6 py-8 pb-24 md:pb-8 max-w-3xl mx-auto w-full min-h-screen flex flex-col items-center justify-center bg-[#FBF9F6]">
+        <Loader className="animate-spin" size={40} />
+      </div>
+    );
+  }
 
   return (
     <div className="px-6 py-8 pb-24 md:pb-8 max-w-3xl mx-auto w-full min-h-screen flex flex-col bg-[#FBF9F6]">
@@ -87,36 +78,41 @@ export default function BookingList() {
 
       {/* Dynamic List */}
       <div className="flex-1 space-y-4">
-        {currentBookings.length > 0 ? (
-          currentBookings.map((b) => (
-            <Link key={b.id} href={`/dashboard/bookings/${b.id}`} className="block bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 hover:border-[#37A47C]/40 hover:shadow-md transition-all group">
-              <div className="flex justify-between items-center mb-4 border-b border-slate-50 pb-4">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{b.invoice}</span>
-                <div className={`px-3 py-1 font-bold text-xs rounded-full border ${b.statusColor} flex items-center gap-1`}>
-                  {b.status === 'Terkonfirmasi' && <CheckCircle2 size={12} />}
-                  {b.status}
-                </div>
-              </div>
-              
-              <div className="flex gap-4">
-                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden relative ${b.hasPhoto ? 'bg-slate-200' : 'bg-[#1B4332] text-white'}`}>
-                  {b.hasPhoto ? <div className="absolute inset-0 bg-slate-300"></div> : <span className="font-serif font-bold text-xl">{b.nurse.substring(5, 6)}</span>}
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-[#1B4332] text-lg leading-tight mb-1">{b.nurse}</h3>
-                  <p className="text-sm font-medium text-[#37A47C] mb-2">{b.service} <span className="text-slate-400 font-light pl-1">({b.patient})</span></p>
-                  
-                  <div className="flex items-center text-xs text-slate-500 gap-1.5 font-medium">
-                    <Calendar size={14} className="text-slate-400" />
-                    {b.date}
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((apt: any) => {
+            const statusInfo = getStatusInfo(apt.status);
+            const nurseInitial = apt.nurseName?.charAt(0) || 'N';
+            
+            return (
+              <Link key={apt.id} href={`/dashboard/bookings/${apt.id}`} className="block bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 hover:border-[#37A47C]/40 hover:shadow-md transition-all group">
+                <div className="flex justify-between items-center mb-4 border-b border-slate-50 pb-4">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">#{apt.id.substring(0, 8)}</span>
+                  <div className={`px-3 py-1 font-bold text-xs rounded-full border ${statusInfo.color} flex items-center gap-1`}>
+                    {apt.status === 'CONFIRMED' && <CheckCircle2 size={12} />}
+                    {statusInfo.label}
                   </div>
                 </div>
-                <div className="self-center">
-                  <ChevronRight size={20} className="text-slate-300 group-hover:text-[#37A47C] transition-colors" />
+                
+                <div className="flex gap-4">
+                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden bg-[#1B4332] text-white">
+                    <span className="font-serif font-bold text-xl">{nurseInitial}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-[#1B4332] text-lg leading-tight mb-1">{apt.nurseName || 'Perawat'}</h3>
+                    <p className="text-sm font-medium text-[#37A47C] mb-2">{apt.serviceType || 'Care'} <span className="text-slate-400 font-light pl-1">({apt.patientName || 'Pasien'})</span></p>
+                    
+                    <div className="flex items-center text-xs text-slate-500 gap-1.5 font-medium">
+                      <Calendar size={14} className="text-slate-400" />
+                      {formatDate(apt.dueDate)}
+                    </div>
+                  </div>
+                  <div className="self-center">
+                    <ChevronRight size={20} className="text-slate-300 group-hover:text-[#37A47C] transition-colors" />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))
+              </Link>
+            );
+          })
         ) : (
           /* Empty State */
           <div className="bg-white rounded-[2rem] p-6 border border-slate-100 flex flex-col items-center justify-center text-center py-16 h-full mt-4">
@@ -128,9 +124,9 @@ export default function BookingList() {
                {activeTab === 'aktif' ? 'Cari perawat terbaik untuk kebutuhan medis lansia Anda hari ini.' : 'Tidak ada riwayat untuk ditampilkan pada kategori ini.'}
              </p>
              {activeTab === 'aktif' && (
-               <button onClick={() => window.location.href='/dashboard/nurses'} className="mt-6 font-bold text-sm bg-[#37A47C] text-white hover:bg-[#1B4332] transition-colors px-6 py-3 rounded-xl shadow-lg shadow-[#37A47C]/20">
+               <Link href="/dashboard/nurses" className="mt-6 font-bold text-sm bg-[#37A47C] text-white hover:bg-[#1B4332] transition-colors px-6 py-3 rounded-xl shadow-lg shadow-[#37A47C]/20 inline-block">
                  Cari Perawat
-               </button>
+               </Link>
              )}
           </div>
         )}

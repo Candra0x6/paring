@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import MobileCheck from "@/components/MobileCheck";
+import { Providers } from "./providers";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -29,8 +30,10 @@ export default function RootLayout({
       className={`${outfit.variable} ${playfair.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col font-sans bg-[#FBF9F6] text-slate-800">
-        <MobileCheck />
-        {children}
+        <Providers>
+          <MobileCheck />
+          {children}
+        </Providers>
       </body>
     </html>
   );
