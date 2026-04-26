@@ -13,7 +13,7 @@ import {
 import { NursesService } from './nurses.service';
 import { CreateNurseDto, CreateNurseSchema } from './dto/create-nurse.dto';
 import { UpdateNurseDto, UpdateNurseSchema } from './dto/update-nurse.dto';
-import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { Response } from 'express';
 
 import {

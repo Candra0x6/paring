@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
-import { env } from 'src/env';
+import { env } from '../env';
 
 @Injectable()
 export class AuthService {

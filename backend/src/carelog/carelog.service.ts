@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateCarelogDto } from './dto/create-carelog.dto';
 import { UpdateCarelogDto } from './dto/update-carelog.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class CarelogService {

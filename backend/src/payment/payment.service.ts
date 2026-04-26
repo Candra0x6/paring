@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import { Snap } from 'midtrans-client';
-import { env } from 'src/env';
+import { env } from '../env';
 
 @Injectable()
 export class PaymentService {

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { PatientsService } from './patients.service';
-import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import {
   createPatientSchema,
   updatePatientSchema,

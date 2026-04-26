@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateActivitylogDto } from './dto/create-activitylog.dto';
 import { UpdateActivitylogDto } from './dto/update-activitylog.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class ActivitylogService {

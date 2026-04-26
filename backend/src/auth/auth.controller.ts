@@ -2,9 +2,9 @@ import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto, createAuthDtoSchema } from './dto/create-auth.dto';
 import { Response } from 'express';
-import { env } from 'src/env';
+import { env } from '../env';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 
 @Controller('auth')
 export class AuthController {
