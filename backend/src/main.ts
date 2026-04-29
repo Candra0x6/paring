@@ -10,26 +10,32 @@ async function createApp(): Promise<INestApplication> {
     return cachedApp;
   }
 
-  const app = await NestFactory.create(AppModule);
+  try {
+    const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api');
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: false,
-  });
+    app.setGlobalPrefix('api');
+    app.enableCors({
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: false,
+    });
 
-  const config = new DocumentBuilder()
-    .setTitle('Paring API')
-    .setDescription('Paring API Documentation')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+    const config = new DocumentBuilder()
+      .setTitle('Paring API')
+      .setDescription('Paring API Documentation')
+      .setVersion('1.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
 
-  await app.init();
-  cachedApp = app;
-  return app;
+    await app.init();
+    console.log('✓ Application initialized successfully');
+    cachedApp = app;
+    return app;
+  } catch (error) {
+    console.error('✗ Error creating app:', error);
+    throw error;
+  }
 }
 
 // Vercel serverless handler — exported as default
@@ -39,15 +45,23 @@ export default async (req: any, res: any) => {
     const server = app.getHttpAdapter().getInstance();
     return server(req, res);
   } catch (error) {
-    console.error('Error in Vercel handler:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('✗ Error in Vercel handler:', error);
+    res.status(500).json({ 
+      error: 'Internal Server Error',
+      message: error?.message || 'Unknown error'
+    });
   }
 };
 
 // Local development — when run directly via `nest start` or `node dist/src/main`
 if (!process.env.VERCEL) {
-  createApp().then(async (app) => {
-    await app.listen(3000);
-    console.log('Application is running on: http://localhost:3000');
-  });
+  createApp()
+    .then(async (app) => {
+      await app.listen(3000);
+      console.log('✓ Application is running on: http://localhost:3000');
+    })
+    .catch((error) => {
+      console.error('✗ Failed to start application:', error);
+      process.exit(1);
+    });
 }
