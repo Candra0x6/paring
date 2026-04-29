@@ -13,7 +13,11 @@ async function createApp(): Promise<INestApplication> {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: false,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Paring API')

@@ -1,6 +1,6 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '../generated/prisma/client';
 import {
   AppointmentStatus,
   Role,
@@ -98,6 +98,7 @@ async function main() {
         status:
           i === 0 ? AppointmentStatus.ONGOING : AppointmentStatus.CONFIRMED,
         dueDate: new Date(new Date().getTime() + (i + 1) * 24 * 60 * 60 * 1000), // besok sd 5 hari ke depan
+        totalPrice: 150000 + i * 50000,
       },
     });
     appointments.push(appointment);
