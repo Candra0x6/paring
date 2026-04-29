@@ -15,9 +15,11 @@ async function createApp(): Promise<INestApplication> {
 
     app.setGlobalPrefix('api');
     app.enableCors({
-      origin: '*',
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      credentials: false,
+      origin: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      credentials: true,
+      allowedHeaders: '*',
+      exposedHeaders: '*',
     });
 
     const config = new DocumentBuilder()
