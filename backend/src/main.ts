@@ -27,16 +27,21 @@ async function createApp(): Promise<INestApplication> {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
+  await app.init();
   cachedApp = app;
   return app;
 }
 
 // Vercel serverless handler — exported as default
 export default async (req: any, res: any) => {
-  const app = await createApp();
-  await app.init();
-  const server = app.getHttpAdapter().getInstance();
-  server(req, res);
+  try {
+    const app = await createApp();
+    const server = app.getHttpAdapter().getInstance();
+    return server(req, res);
+  } catch (error) {
+    console.error('Error in Vercel handler:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 // Local development — when run directly via `nest start` or `node dist/src/main`
