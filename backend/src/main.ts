@@ -16,10 +16,11 @@ async function createApp(): Promise<INestApplication> {
     app.setGlobalPrefix('api');
     app.enableCors({
       origin: true,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       credentials: true,
-      allowedHeaders: '*',
-      exposedHeaders: '*',
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+      exposedHeaders: ['Content-Type', 'Authorization', 'X-Total-Count', 'X-Page-Number'],
+      maxAge: 86400,
     });
 
     const config = new DocumentBuilder()
