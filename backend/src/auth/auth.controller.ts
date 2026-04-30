@@ -28,7 +28,7 @@ export class AuthController {
     @Body(new ZodValidationPipe(createAuthDtoSchema))
     createAuthDto: CreateAuthDto,
   ) {
-    const token = await this.authService.create(createAuthDto);
+    const { token, user } = await this.authService.create(createAuthDto);
 
     res.cookie('access_token', token, {
       httpOnly: true,
@@ -37,6 +37,13 @@ export class AuthController {
       path: '/',
     });
 
-    return { message: 'Authentication successful' };
+    return { 
+      message: 'Authentication successful',
+      data: {
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+      }
+    };
   }
 }

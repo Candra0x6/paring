@@ -38,10 +38,23 @@ export default function AddPatient() {
     }
 
     // Calculate dateOfBirth from age
-    const currentYear = new Date().getFullYear();
+    // Using today's month and day for better accuracy
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
     const age = parseInt(data.age || '0');
     const birthYear = currentYear - age;
-    const dateOfBirth = `${birthYear}-01-01`;
+    const dateOfBirth = `${birthYear}-${month}-${day}`;
+
+    // Build comprehensive medical history
+    const medicalHistoryItems: string[] = [];
+    if (isDiabetes) medicalHistoryItems.push('Diabetes');
+    if (isBedridden) medicalHistoryItems.push('Bedridden');
+    if (data.bp_normal) medicalHistoryItems.push(`Blood Pressure: ${data.bp_normal}`);
+    if (data.blood_sugar) medicalHistoryItems.push(`Blood Sugar: ${data.blood_sugar}`);
+    if (data.allergies) medicalHistoryItems.push(`Allergies: ${data.allergies}`);
+    if (data.additional_notes) medicalHistoryItems.push(`Notes: ${data.additional_notes}`);
 
     createPatient(
       {
@@ -50,11 +63,7 @@ export default function AddPatient() {
         dateOfBirth,
         weight: data.weight ? parseFloat(data.weight as any) : undefined,
         height: data.height ? parseFloat(data.height as any) : undefined,
-        medicalHistory: [
-          ...(isDiabetes ? ['Diabetes'] : []),
-          ...(isBedridden ? ['Bedridden'] : []),
-          ...(data.allergies ? [data.allergies] : []),
-        ],
+        medicalHistory: medicalHistoryItems.length > 0 ? medicalHistoryItems : undefined,
       },
       {
         onSuccess: () => {
@@ -106,6 +115,7 @@ export default function AddPatient() {
               </label>
               <Input
                 placeholder="Mis. Ibu Kartini"
+                disabled={isPending}
                 {...register('name')}
               />
               {errors.name && (
@@ -120,7 +130,7 @@ export default function AddPatient() {
                 <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">
                   Usia (Tahun) <span className="text-red-500">*</span>
                 </label>
-                <Input type="number" placeholder="60" {...register('age')} />
+                <Input type="number" placeholder="60" disabled={isPending} {...register('age')} />
                 {errors.age && (
                   <p className="text-red-500 text-xs mt-1">
                     {errors.age.message}
@@ -132,8 +142,9 @@ export default function AddPatient() {
                   Jenis Kelamin <span className="text-red-500">*</span>
                 </label>
                 <select
+                  disabled={isPending}
                   {...register('gender')}
-                  className="w-full h-12 px-4 bg-[#F8FAFC] border border-slate-200 rounded-xl focus:outline-none focus:border-[#37A47C] transition-colors text-slate-800"
+                  className="w-full h-12 px-4 bg-[#F8FAFC] border border-slate-200 rounded-xl focus:outline-none focus:border-[#37A47C] transition-colors text-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="">Pilih</option>
                   <option value="L">Laki-laki</option>
@@ -155,6 +166,7 @@ export default function AddPatient() {
                 <Input
                   type="number"
                   placeholder="55"
+                  disabled={isPending}
                   {...register('weight')}
                 />
               </div>
@@ -165,6 +177,7 @@ export default function AddPatient() {
                 <Input
                   type="number"
                   placeholder="160"
+                  disabled={isPending}
                   {...register('height')}
                 />
               </div>
@@ -177,6 +190,7 @@ export default function AddPatient() {
               <Textarea
                 placeholder="Alamat domisili saat ini"
                 rows={3}
+                disabled={isPending}
                 {...register('address')}
               />
               {errors.address && (
@@ -205,7 +219,7 @@ export default function AddPatient() {
                 <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">
                   Tekanan Darah Normal
                 </label>
-                <Input placeholder="120/80" {...register('bp_normal')} />
+                <Input placeholder="120/80" disabled={isPending} {...register('bp_normal')} />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">
@@ -213,6 +227,7 @@ export default function AddPatient() {
                 </label>
                 <Input
                   placeholder="110 mg/dL"
+                  disabled={isPending}
                   {...register('blood_sugar')}
                 />
               </div>
@@ -222,12 +237,14 @@ export default function AddPatient() {
               <div>
                 <Checkbox
                   label="Memiliki Riwayat Diabetes"
+                  disabled={isPending}
                   {...register('isDiabetes')}
                 />
               </div>
               <div>
                 <Checkbox
                   label="Pasien Tirah Baring (Bedridden)"
+                  disabled={isPending}
                   {...register('isBedridden')}
                 />
               </div>
@@ -237,10 +254,11 @@ export default function AddPatient() {
               <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">
                 Alergi Obat/Makanan
               </label>
-              <Input
-                placeholder="Mis. Paracetamol, Seafood"
-                {...register('allergies')}
-              />
+               <Input
+                 placeholder="Mis. Paracetamol, Seafood"
+                 disabled={isPending}
+                 {...register('allergies')}
+               />
             </div>
 
             <div>
@@ -250,6 +268,7 @@ export default function AddPatient() {
               <Textarea
                 placeholder="Kondisi khusus, kebiasaan, atau pantangan..."
                 rows={3}
+                disabled={isPending}
                 {...register('additional_notes')}
               />
             </div>
@@ -274,6 +293,7 @@ export default function AddPatient() {
               </label>
               <Input
                 placeholder="Nama kerabat"
+                disabled={isPending}
                 {...register('emergency_contact')}
               />
               {errors.emergency_contact && (
@@ -291,6 +311,7 @@ export default function AddPatient() {
                 type="tel"
                 icon={<Phone size={18} />}
                 placeholder="08xxxxxxxxxx"
+                disabled={isPending}
                 {...register('emergency_phone')}
               />
               {errors.emergency_phone && (
@@ -302,6 +323,7 @@ export default function AddPatient() {
             <div className="pt-4">
               <Checkbox
                 label="Saya mengizinkan PARING AI untuk menganalisis laporan medis pasien guna mendapatkan rekomendasi perawatan terbaik."
+                disabled={isPending}
                 {...register('ai_consent')}
               />
             </div>

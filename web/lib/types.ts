@@ -52,6 +52,7 @@ export interface NurseProfile extends CreateNurseRequest {
 
 // Appointment
 export interface CreateAppointmentRequest {
+  patientName: string;
   patientId: string;
   nurseId: string;
   serviceType: 'VISIT' | 'LIVE_IN' | 'LIVE_OUT';

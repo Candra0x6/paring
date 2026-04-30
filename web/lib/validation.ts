@@ -67,6 +67,7 @@ export type PatientFormData = z.infer<typeof patientSchema>;
 
 // Appointment Schemas
 export const appointmentSchema = z.object({
+  patientName: z.string().min(2, 'Nama lansia wajib diisi'),
   patientId: z.string().min(1, 'Pilihan pasien wajib diisi'),
   nurseId: z.string().min(1, 'Pilihan perawat wajib diisi'),
   serviceType: z.enum(['VISIT', 'LIVE_IN', 'LIVE_OUT']).refine(

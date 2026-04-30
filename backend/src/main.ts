@@ -15,7 +15,7 @@ async function createApp(): Promise<INestApplication> {
 
     app.setGlobalPrefix('api');
     app.enableCors({
-      origin: true,
+      origin: process.env.FRONTEND_URL || 'http://localhost:3001',
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],

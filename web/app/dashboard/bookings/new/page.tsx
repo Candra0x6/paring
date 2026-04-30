@@ -70,6 +70,7 @@ export default function NewBookingPage() {
 
     createAppointment(
       {
+        patientName: data.patientName,
         patientId: data.patientId,
         nurseId: data.nurseId,
         serviceType: data.serviceType as 'VISIT' | 'LIVE_IN' | 'LIVE_OUT',
@@ -114,10 +115,27 @@ export default function NewBookingPage() {
       </header>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Patient Name Input */}
+        <section className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+          <label className="block text-xs font-bold text-[#1B4332] mb-3 uppercase tracking-wider">
+            Nama Lansia (Pasien) <span className="text-red-500">*</span>
+          </label>
+          <Input
+            {...register('patientName')}
+            placeholder="Masukkan nama lansia yang dirawat"
+            className="h-14 px-4 bg-[#F8FAFC] border border-slate-200 rounded-xl focus:outline-none focus:border-[#37A47C] transition-colors text-slate-800 font-bold"
+          />
+          {errors.patientName && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.patientName.message}
+            </p>
+          )}
+        </section>
+
         {/* Patient Selection */}
         <section className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
           <label className="block text-xs font-bold text-[#1B4332] mb-3 uppercase tracking-wider">
-            Pasien yang Dirawat
+            Pilih Profil Pasien <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <select
@@ -154,7 +172,7 @@ export default function NewBookingPage() {
         {/* Nurse Selection */}
         <section className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
           <label className="block text-xs font-bold text-[#1B4332] mb-3 uppercase tracking-wider">
-            Pilih Perawat
+            Pilih Perawat <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <select
@@ -185,7 +203,7 @@ export default function NewBookingPage() {
         {/* Service Type Selection */}
         <section className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
           <label className="block text-xs font-bold text-[#1B4332] mb-3 uppercase tracking-wider">
-            Layanan Booking
+            Layanan Booking <span className="text-red-500">*</span>
           </label>
           <div className="space-y-3">
             {[
@@ -244,7 +262,7 @@ export default function NewBookingPage() {
         {/* Schedule */}
         <section className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
           <label className="block text-xs font-bold text-[#1B4332] mb-3 uppercase tracking-wider">
-            Jadwal Perawatan
+            Jadwal Perawatan <span className="text-red-500">*</span>
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div>

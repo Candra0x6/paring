@@ -9,7 +9,7 @@ export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, onChange, ...props }, ref) => {
+  ({ label, onChange, disabled, ...props }, ref) => {
     const [internalChecked, setInternalChecked] = useState(props.checked === true);
     
     const isChecked = onChange ? props.checked : internalChecked;
@@ -25,19 +25,20 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
     return (
       <motion.label 
-        whileHover={{ x: 5 }} 
-        className="flex items-center gap-3 cursor-pointer"
+        whileHover={{ x: disabled ? 0 : 5 }} 
+        className={`flex items-center gap-3 ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
       >
         <input
           ref={ref}
           type="checkbox"
           checked={isChecked as boolean}
           onChange={handleChange}
+          disabled={disabled}
           className="hidden"
           {...props}
         />
         <motion.div 
-          whileTap={{ scale: 0.8 }} 
+          whileTap={{ scale: disabled ? 1 : 0.8 }} 
           className={
             isChecked
               ? "w-6 h-6 rounded-md bg-[#37A47C] flex items-center justify-center text-white shadow-sm"
@@ -52,7 +53,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             <Check size={16} />
           )}
         </motion.div>
-        <span className="text-slate-700 font-medium">{label}</span>
+        <span className={`font-medium ${disabled ? 'text-slate-500' : 'text-slate-700'}`}>{label}</span>
       </motion.label>
     );
   }
