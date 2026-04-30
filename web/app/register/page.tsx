@@ -108,16 +108,21 @@ export default function RegisterPage() {
               email: registerData.email,
               password: registerData.password,
             },
-            {
-              onSuccess: (loginResponse: any) => {
-                const userId = loginResponse.data?.user?.id || 'unknown';
-                setAuth('FAMILY', userId, registerData.email);
-                router.push('/dashboard');
-              },
-              onError: () => {
-                router.push('/login');
-              },
-            }
+             {
+               onSuccess: (loginResponse: any) => {
+                 const userId = loginResponse.data?.userId;
+                 if (!userId) {
+                   toast.error('Login failed: User ID not found');
+                   router.push('/login');
+                   return;
+                 }
+                 setAuth('FAMILY', userId, registerData.email);
+                 router.push('/dashboard');
+               },
+               onError: () => {
+                 router.push('/login');
+               },
+             }
           );
         },
         onError: (error: any) => {
@@ -146,13 +151,13 @@ export default function RegisterPage() {
         role: 'NURSE',
       },
       {
-        onSuccess: (response: any) => {
-          const userId = response.data?.user?.id;
-          
-          if (!userId) {
-            toast.error('Failed to create user account');
-            return;
-          }
+         onSuccess: (response: any) => {
+           const userId = response.data?.id;
+           
+           if (!userId) {
+             toast.error('Failed to create user account');
+             return;
+           }
 
           // Then create nurse profile
           createNurseProfile(
@@ -171,15 +176,21 @@ export default function RegisterPage() {
                     email: userData.email,
                     password: userData.password,
                   },
-                  {
-                    onSuccess: (loginResponse: any) => {
-                      setAuth('NURSE', userId, userData.email);
-                      router.push('/nurse/dashboard');
-                    },
-                    onError: () => {
-                      router.push('/login');
-                    },
-                  }
+                   {
+                     onSuccess: (loginResponse: any) => {
+                       const loginUserId = loginResponse.data?.userId;
+                       if (!loginUserId) {
+                         toast.error('Login failed: User ID not found');
+                         router.push('/login');
+                         return;
+                       }
+                       setAuth('NURSE', loginUserId, userData.email);
+                       router.push('/nurse/dashboard');
+                     },
+                     onError: () => {
+                       router.push('/login');
+                     },
+                   }
                 );
               },
               onError: (error: any) => {

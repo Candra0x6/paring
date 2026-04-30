@@ -28,10 +28,17 @@ export default function LoginPage() {
   const onSubmit = (data: LoginFormData) => {
     login(data, {
       onSuccess: (response: any) => {
-        // Extract user info from response (backend returns user data)
-        const userRole = response.data?.user?.role || 'FAMILY';
-        const userId = response.data?.user?.id || 'unknown';
-        const email = response.data?.user?.email || data.email;
+        // Extract user info from response
+        // Backend returns: { message, data: { userId, email, role } }
+        const userRole = response.data?.role || 'FAMILY';
+        const userId = response.data?.userId;
+        const email = response.data?.email || data.email;
+
+        // Validate userId is a valid UUID
+        if (!userId || userId === 'unknown') {
+          toast.error('Login gagal: User ID tidak valid');
+          return;
+        }
 
         // Store auth state
         setAuth(userRole, userId, email);
