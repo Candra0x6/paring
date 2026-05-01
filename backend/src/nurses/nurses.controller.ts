@@ -9,12 +9,17 @@ import {
   Query,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { NursesService } from './nurses.service';
 import { CreateNurseDto, CreateNurseSchema } from './dto/create-nurse.dto';
 import { UpdateNurseDto, UpdateNurseSchema } from './dto/update-nurse.dto';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { Response } from 'express';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles, CurrentUser } from '../common/decorators';
+import type { JwtPayload } from '../common/decorators/current-user.decorator';
 
 import {
   ApiTags,
@@ -28,7 +33,7 @@ import {
 export class NursesController {
   constructor(private readonly nursesService: NursesService) {}
 
-  @ApiOperation({ summary: 'Create a new nurse' })
+  @ApiOperation({ summary: 'Create a new nurse (Public - Nurse Registration)' })
   @ApiResponse({ status: 201, description: 'Nurse created successfully' })
   @Post()
   async create(
@@ -43,7 +48,7 @@ export class NursesController {
     });
   }
 
-  @ApiOperation({ summary: 'Get all nurses' })
+  @ApiOperation({ summary: 'Get all nurses (Public - Browse nurses)' })
   @ApiResponse({ status: 200, description: 'Nurses found successfully' })
   @ApiQuery({ name: 'name', required: false, description: 'Nurse name' })
   @ApiQuery({ name: 'specialization', required: false, description: 'Specialization' })
@@ -68,7 +73,7 @@ export class NursesController {
     });
   }
 
-  @ApiOperation({ summary: 'Get nurse by ID' })
+  @ApiOperation({ summary: 'Get nurse by ID (Public - Nurse profile)' })
   @ApiResponse({ status: 200, description: 'Nurse found successfully' })
   @Get(':id')
   async findOne(@Res() res: Response, @Param('id') id: string) {
@@ -79,15 +84,22 @@ export class NursesController {
     });
   }
 
-  @ApiOperation({ summary: 'Update nurse by ID' })
+  @ApiOperation({ summary: 'Update nurse profile (NURSE or ADMIN only)' })
   @ApiResponse({ status: 200, description: 'Nurse updated successfully' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN' as any, 'NURSE' as any)
   @Patch(':id')
   async update(
     @Res() res: Response,
     @Param('id') id: string,
+    @CurrentUser() user: JwtPayload,
     @Body(new ZodValidationPipe(UpdateNurseSchema))
     updateNurseDto: UpdateNurseDto,
   ) {
+    // Nurses can only update their own profile (ADMIN can update anyone's)
+    if (user.role === 'NURSE' && user.user_id !== id) {
+      throw new Error('Nurses can only update their own profile');
+    }
     const result = await this.nursesService.update(id, updateNurseDto);
     return res.status(HttpStatus.OK).json({
       message: 'Perawat berhasil diupdate',
@@ -95,8 +107,10 @@ export class NursesController {
     });
   }
 
-  @ApiOperation({ summary: 'Delete nurse by ID' })
+  @ApiOperation({ summary: 'Delete nurse by ID (ADMIN only)' })
   @ApiResponse({ status: 200, description: 'Nurse removed successfully' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN' as any)
   @Delete(':id')
   async remove(@Res() res: Response, @Param('id') id: string) {
     const result = await this.nursesService.remove(id);

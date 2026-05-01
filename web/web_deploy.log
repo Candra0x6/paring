@@ -1,0 +1,82 @@
+Retrieving project…
+Deploying candras-projects/web
+Inspect: https://vercel.com/candras-projects/web/CjtFiLoWYBF9o8tRsaqKXXRB4NaS [2s]
+Production: https://web-jllpnub8t-candras-projects.vercel.app [2s]
+https://web-jllpnub8t-candras-projects.vercel.appBuilding...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Downloading 84 deployment files...
+Building: Restored build cache from previous deployment (5w1oNVtKBE4w4TPWWYBdw8LfH8ok)
+Building: Running "vercel build"
+Building: Vercel CLI 51.6.1
+Building: Installing dependencies...
+Building: up to date in 988ms
+Building: 155 packages are looking for funding
+Building: run `npm fund` for details
+Building: Detected Next.js version: 16.2.1
+Building: Running "npm run build"
+Building: > web@0.1.0 build
+Building: > next build
+Building: Applying modifyConfig from Vercel
+Building: ▲ Next.js 16.2.1 (Turbopack)
+Building: ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+Building: Creating an optimized production build ...
+Building: ✓ Compiled successfully in 17.6s
+Building: Running TypeScript ...
+Building: Finished TypeScript in 8.3s ...
+Building: Collecting page data using 1 worker ...
+Building: Generating static pages using 1 worker (0/24) ...
+Building: Generating static pages using 1 worker (6/24)
+Building: Generating static pages using 1 worker (12/24)
+Building: Generating static pages using 1 worker (18/24)
+Building: ✓ Generating static pages using 1 worker (24/24) in 565ms
+Building: Finalizing page optimization ...
+Building: Running onBuildComplete from Vercel
+Building: Route (app)
+Building: ┌ ○ /
+Building: ├ ○ /_not-found
+Building: ├ ○ /dashboard
+Building: ├ ○ /dashboard/ai-chat
+Building: ├ ○ /dashboard/bookings
+Building: ├ ƒ /dashboard/bookings/[id]
+Building: ├ ○ /dashboard/bookings/new
+Building: ├ ○ /dashboard/consultation
+Building: ├ ƒ /dashboard/consultation/[id]
+Building: ├ ƒ /dashboard/monitoring/[sessionId]
+Building: ├ ○ /dashboard/nurses
+Building: ├ ƒ /dashboard/nurses/[id]
+Building: ├ ○ /dashboard/patients
+Building: ├ ƒ /dashboard/patients/[id]
+Building: ├ ƒ /dashboard/patients/[id]/analytics
+Building: ├ ○ /dashboard/patients/new
+Building: ├ ƒ /dashboard/payment/[bookingId]
+Building: ├ ○ /dashboard/payment/success
+Building: ├ ○ /dashboard/sessions
+Building: ├ ƒ /dashboard/sessions/[sessionId]/report
+Building: ├ ○ /login
+Building: ├ ○ /mobile-only
+Building: ├ ○ /nurse-register
+Building: ├ ○ /nurse/appointments
+Building: ├ ƒ /nurse/appointments/[id]
+Building: ├ ○ /nurse/availability
+Building: ├ ○ /nurse/dashboard
+Building: ├ ○ /nurse/earnings
+Building: ├ ○ /nurse/inbox
+Building: ├ ○ /nurse/profile
+Building: ├ ƒ /nurse/session/[id]/checklist
+Building: ├ ƒ /nurse/session/[id]/non-medical
+Building: └ ○ /register
+Building: ƒ Proxy (Middleware)
+Building: ○  (Static)   prerendered as static content
+Building: ƒ  (Dynamic)  server-rendered on demand
+Building: Build Completed in /vercel/output [31s]
+Building: Deploying outputs...
+[2K[1A[2K[GProduction: https://web-jllpnub8t-candras-projects.vercel.app [45s]
+Completing...
+Aliased: https://web-neon-one-56.vercel.app [45s]
+
+Common next commands:
+- `vercel inspect web-jllpnub8t-candras-projects.vercel.app --logs`
+- `vercel redeploy web-jllpnub8t-candras-projects.vercel.app`

@@ -15,10 +15,10 @@ async function createApp(): Promise<INestApplication> {
 
     app.setGlobalPrefix('api');
     app.enableCors({
-      origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+      origin: true,
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       credentials: true,
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-User-Role'],
       exposedHeaders: ['Content-Type', 'Authorization', 'X-Total-Count', 'X-Page-Number'],
       maxAge: 86400,
     });

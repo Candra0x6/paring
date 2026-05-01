@@ -29,10 +29,11 @@ export default function LoginPage() {
     login(data, {
       onSuccess: (response: any) => {
         // Extract user info from response
-        // Backend returns: { message, data: { userId, email, role } }
+        // Backend returns: { message, data: { userId, email, role, token } }
         const userRole = response.data?.role || 'FAMILY';
         const userId = response.data?.userId;
         const email = response.data?.email || data.email;
+        const token = response.data?.token;
 
         // Validate userId is a valid UUID
         if (!userId || userId === 'unknown') {
@@ -41,7 +42,7 @@ export default function LoginPage() {
         }
 
         // Store auth state
-        setAuth(userRole, userId, email);
+        setAuth(userRole, userId, email, token);
         toast.success('Login berhasil!');
 
         // Redirect based on role

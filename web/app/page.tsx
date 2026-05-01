@@ -36,9 +36,17 @@ export default function LandingPage() {
   const [bookingForm, setBookingForm] = useState({ name: '', phone: '', patient: '', service: '' });
 
   useEffect(() => {
-    const token = localStorage.getItem('paring_auth_token');
-    if (token) {
-      router.push('/dashboard');
+    // Check if user is already logged in
+    const userRole = localStorage.getItem('userRole');
+    const userId = localStorage.getItem('userId');
+
+    if (userRole && userId) {
+      // User is logged in, redirect to dashboard based on role
+      if (userRole === 'NURSE') {
+        router.push('/nurse/dashboard');
+      } else {
+        router.push('/dashboard');
+      }
     }
   }, [router]);
 

@@ -9,6 +9,7 @@ import {
   Res,
   Query,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -16,6 +17,10 @@ import { CreateUserDto, CreateUserSchema } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserSchema } from './dto/update-user.dto';
 import { Response } from 'express';
 import { Role } from 'generated/prisma/enums';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles, CurrentUser } from '../common/decorators';
+import type { JwtPayload } from '../common/decorators/current-user.decorator';
 
 import {
   ApiTags,
@@ -29,7 +34,7 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'Create a new user' })
+  @ApiOperation({ summary: 'Create a new user (Public - Registration)' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
   @Post()
   async create(
@@ -42,10 +47,12 @@ export class UsersController {
     });
   }
 
-  @ApiOperation({ summary: 'Get all users' })
+  @ApiOperation({ summary: 'Get all users (ADMIN only)' })
   @ApiResponse({ status: 200, description: 'Users found successfully' })
   @ApiQuery({ name: 'role', required: false, enum: ['ADMIN', 'FAMILY', 'NURSE'] })
   @ApiQuery({ name: 'name', required: false, description: 'Search by full name' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN' as any)
   @Get()
   async findAll(
     @Res() res: Response,
@@ -64,8 +71,10 @@ export class UsersController {
     });
   }
 
-  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiOperation({ summary: 'Get user by ID (ADMIN only)' })
   @ApiResponse({ status: 200, description: 'User found successfully' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN' as any)
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     return res.status(200).json({
@@ -74,8 +83,10 @@ export class UsersController {
     });
   }
 
-  @ApiOperation({ summary: 'Update user by ID' })
+  @ApiOperation({ summary: 'Update user by ID (ADMIN only)' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN' as any)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -89,8 +100,10 @@ export class UsersController {
     });
   }
 
-  @ApiOperation({ summary: 'Delete user by ID' })
+  @ApiOperation({ summary: 'Delete user by ID (ADMIN only)' })
   @ApiResponse({ status: 200, description: 'User removed successfully' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN' as any)
   @Delete(':id')
   async remove(@Param('id') id: string, @Res() res: Response) {
     const removedUser = await this.usersService.remove(id);

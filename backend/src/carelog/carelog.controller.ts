@@ -8,6 +8,7 @@ import {
   Delete,
   Res,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -28,21 +29,28 @@ import {
 } from './dto/update-carelog.dto';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { Response } from 'express';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles, CurrentUser } from '../common/decorators';
+import type { JwtPayload } from '../common/decorators/current-user.decorator';
 
 @ApiTags('Carelog')
 @Controller('carelog')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CarelogController {
   constructor(private readonly carelogService: CarelogService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new carelog entry' })
+  @ApiOperation({ summary: 'Create a new carelog entry (NURSE only - Medical data)' })
   @ApiBody({ type: CreateCarelogDto })
   @ApiResponse({ status: 201, description: 'Carelog created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @Roles('ADMIN' as any, 'NURSE' as any)
   async create(
     @Res() res: Response,
     @Body(new ZodValidationPipe(createCarelogSchema))
     createCarelogDto: CreateCarelogDto,
+    @CurrentUser() user: JwtPayload,
   ) {
     const result = await this.carelogService.create(createCarelogDto);
     return res.status(201).json({
@@ -52,11 +60,13 @@ export class CarelogController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Retrieve all carelog entries' })
+  @ApiOperation({ summary: 'Retrieve all carelog entries (FAMILY/NURSE can view their own)' })
   @ApiQuery({ name: 'page', required: false, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
   @ApiResponse({ status: 200, description: 'Carelogs retrieved successfully' })
+  @Roles('ADMIN' as any, 'FAMILY' as any, 'NURSE' as any)
   async findAll(
+    @CurrentUser() user: JwtPayload,
     @Res() res: Response,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -72,11 +82,16 @@ export class CarelogController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get a single carelog by ID' })
+  @ApiOperation({ summary: 'Get a single carelog by ID (FAMILY/NURSE can view their own)' })
   @ApiParam({ name: 'id', description: 'Carelog UUID' })
   @ApiResponse({ status: 200, description: 'Carelog retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Carelog not found' })
-  async findOne(@Param('id') id: string, @Res() res: Response) {
+  @Roles('ADMIN' as any, 'FAMILY' as any, 'NURSE' as any)
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: JwtPayload,
+    @Res() res: Response,
+  ) {
     const result = await this.carelogService.findOne(id);
     return res.status(200).json({
       message: 'Carelog retrieved successfully',
@@ -85,16 +100,18 @@ export class CarelogController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update a carelog entry' })
+  @ApiOperation({ summary: 'Update a carelog entry (NURSE or ADMIN only)' })
   @ApiParam({ name: 'id', description: 'Carelog UUID' })
   @ApiBody({ type: UpdateCarelogDto })
   @ApiResponse({ status: 200, description: 'Carelog updated successfully' })
   @ApiResponse({ status: 404, description: 'Carelog not found' })
+  @Roles('ADMIN' as any, 'NURSE' as any)
   async update(
     @Res() res: Response,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateCarelogSchema))
     updateCarelogDto: UpdateCarelogDto,
+    @CurrentUser() user: JwtPayload,
   ) {
     const result = await this.carelogService.update(id, updateCarelogDto);
     return res.status(200).json({
@@ -104,10 +121,11 @@ export class CarelogController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a carelog entry' })
+  @ApiOperation({ summary: 'Delete a carelog entry (ADMIN only)' })
   @ApiParam({ name: 'id', description: 'Carelog UUID' })
   @ApiResponse({ status: 200, description: 'Carelog deleted successfully' })
   @ApiResponse({ status: 404, description: 'Carelog not found' })
+  @Roles('ADMIN' as any)
   async remove(@Res() res: Response, @Param('id') id: string) {
     const result = await this.carelogService.remove(id);
     return res.status(200).json({

@@ -111,12 +111,13 @@ export default function RegisterPage() {
              {
                onSuccess: (loginResponse: any) => {
                  const userId = loginResponse.data?.userId;
+                 const token = loginResponse.data?.token;
                  if (!userId) {
                    toast.error('Login failed: User ID not found');
                    router.push('/login');
                    return;
                  }
-                 setAuth('FAMILY', userId, registerData.email);
+                 setAuth('FAMILY', userId, registerData.email, token);
                  router.push('/dashboard');
                },
                onError: () => {
@@ -179,15 +180,15 @@ export default function RegisterPage() {
                    {
                      onSuccess: (loginResponse: any) => {
                        const loginUserId = loginResponse.data?.userId;
+                       const token = loginResponse.data?.token;
                        if (!loginUserId) {
                          toast.error('Login failed: User ID not found');
                          router.push('/login');
                          return;
                        }
-                       setAuth('NURSE', loginUserId, userData.email);
+                       setAuth('NURSE', loginUserId, userData.email, token);
                        router.push('/nurse/dashboard');
-                     },
-                     onError: () => {
+                     },                     onError: () => {
                        router.push('/login');
                      },
                    }
