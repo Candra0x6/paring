@@ -27,8 +27,6 @@ import { toast } from 'sonner';
 export default function NewBookingPage() {
   const router = useRouter();
   const { userId } = useAuthStore();
-  const [selectedServiceType, setSelectedServiceType] = useState<string>('VISIT');
-  const [notes, setNotes] = useState('');
 
   // Fetch patients, nurses, and pricing
   const { data: patientsData, isLoading: patientsLoading } = usePatients(userId || undefined);
@@ -40,21 +38,19 @@ export default function NewBookingPage() {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
       serviceType: 'VISIT',
       serviceName: 'NON_MEDIS',
+      dueTime: '10:00',
     },
   });
 
   const patientId = watch('patientId');
   const serviceType = watch('serviceType');
-
-  useEffect(() => {
-    setSelectedServiceType(serviceType);
-  }, [serviceType]);
 
   // Get pricing from API or fallback to defaults
   const servicePrices = pricingData?.data || {
@@ -66,7 +62,8 @@ export default function NewBookingPage() {
   const totalPrice = servicePrices[serviceType] || 150000;
 
   const onSubmit = (data: AppointmentFormData) => {
-    const dueDate = new Date(`${data.dueDate}T${register('dueDate')}`);
+    // Combine date and time
+    const combinedDateTime = new Date(`${data.dueDate}T${data.dueTime || '10:00'}:00`);
 
     createAppointment(
       {
@@ -76,7 +73,7 @@ export default function NewBookingPage() {
         serviceType: data.serviceType as 'VISIT' | 'LIVE_IN' | 'LIVE_OUT',
         serviceName: 'NON_MEDIS',
         status: 'PENDING',
-        dueDate: new Date(data.dueDate + ' 10:00:00').toISOString(),
+        dueDate: combinedDateTime.toISOString(),
         totalPrice,
       },
       {
@@ -229,7 +226,7 @@ export default function NewBookingPage() {
               <label
                 key={service.value}
                 className={`flex items-start gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-all ${
-                  selectedServiceType === service.value
+                  serviceType === service.value
                     ? 'border-[#37A47C] bg-[#E2F1EC]/30'
                     : 'border-slate-200 bg-white hover:border-slate-300'
                 }`}
@@ -286,8 +283,8 @@ export default function NewBookingPage() {
               </label>
               <Input
                 type="time"
+                {...register('dueTime')}
                 className="h-14 bg-[#FBF9F6] border-slate-100 font-bold text-slate-700"
-                defaultValue="10:00"
               />
             </div>
           </div>
@@ -300,11 +297,10 @@ export default function NewBookingPage() {
           </label>
           <div className="space-y-4">
             <Textarea
+              {...register('notes')}
               placeholder="Kondisi keluhan detail hari ini..."
               rows={3}
               className="bg-[#F8FAFC] border-slate-100 text-sm"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
             />
 
             {/* Price Summary and Action Button moved here from fixed bottom */}

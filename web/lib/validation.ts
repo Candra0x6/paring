@@ -76,6 +76,8 @@ export const appointmentSchema = z.object({
   ),
   serviceName: z.enum(['MEDIS', 'NON_MEDIS']).optional(),
   dueDate: z.string().min(1, 'Tanggal perawatan wajib diisi'),
+  dueTime: z.string().optional(),
+  notes: z.string().optional(),
   totalPrice: z.number().positive('Harga harus positif'),
 });
 

@@ -1,18 +1,30 @@
+Need to install the following packages:
+vercel@53.1.0
+Ok to proceed? (y) npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@renovatebot/pep440@4.2.1',
+npm warn EBADENGINE   required: { node: '^20.9.0 || ^22.11.0 || ^24', pnpm: '^10.0.0' },
+npm warn EBADENGINE   current: { node: 'v25.9.0', npm: '11.13.0' }
+npm warn EBADENGINE }
 Retrieving project…
 Deploying candras-projects/web
-Inspect: https://vercel.com/candras-projects/web/81M48JFkFgdsTrSy3LYDeL9fYz5S [2s]
-Production: https://web-fqr1po20c-candras-projects.vercel.app [2s]
-https://web-fqr1po20c-candras-projects.vercel.appBuilding...
+Uploading [--------------------] (0.0B/116.2KB)
+Uploading [======--------------] (40.2KB/116.2KB)
+Uploading [==========----------] (62.4KB/116.2KB)
+Uploading [================----] (95.7KB/116.2KB)
+Uploading [====================] (116.2KB/116.2KB)
+Inspect: https://vercel.com/candras-projects/web/H4PfiJKfkr72u2k59xCpADXwVAEb [3s]
+Production: https://web-8ejhofaer-candras-projects.vercel.app [3s]
+https://web-8ejhofaer-candras-projects.vercel.appBuilding...
 Building...
 Building: Running build in Washington, D.C., USA (East) – iad1
 Building: Build machine configuration: 2 cores, 8 GB
 Building: Retrieving list of deployment files...
 Building: Downloading 84 deployment files...
-Building: Restored build cache from previous deployment (CjtFiLoWYBF9o8tRsaqKXXRB4NaS)
+Building: Restored build cache from previous deployment (81M48JFkFgdsTrSy3LYDeL9fYz5S)
 Building: Running "vercel build"
 Building: Vercel CLI 51.6.1
 Building: Installing dependencies...
-Building: up to date in 897ms
+Building: up to date in 1s
 Building: 155 packages are looking for funding
 Building: run `npm fund` for details
 Building: Detected Next.js version: 16.2.1
@@ -23,15 +35,15 @@ Building: Applying modifyConfig from Vercel
 Building: ▲ Next.js 16.2.1 (Turbopack)
 Building: ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
 Building: Creating an optimized production build ...
-Building: ✓ Compiled successfully in 14.7s
+Building: ✓ Compiled successfully in 16.0s
 Building: Running TypeScript ...
-Building: Finished TypeScript in 7.7s ...
+Building: Finished TypeScript in 8.3s ...
 Building: Collecting page data using 1 worker ...
 Building: Generating static pages using 1 worker (0/24) ...
 Building: Generating static pages using 1 worker (6/24)
 Building: Generating static pages using 1 worker (12/24)
 Building: Generating static pages using 1 worker (18/24)
-Building: ✓ Generating static pages using 1 worker (24/24) in 535ms
+Building: ✓ Generating static pages using 1 worker (24/24) in 681ms
 Building: Finalizing page optimization ...
 Building: Running onBuildComplete from Vercel
 Building: Route (app)
@@ -71,14 +83,14 @@ Building: └ ○ /register
 Building: ƒ Proxy (Middleware)
 Building: ○  (Static)   prerendered as static content
 Building: ƒ  (Dynamic)  server-rendered on demand
-Building: Build Completed in /vercel/output [27s]
+Building: Build Completed in /vercel/output [29s]
 Building: Deploying outputs...
 Building: Deployment completed
 Building: Creating build cache...
-[2K[1A[2K[GProduction: https://web-fqr1po20c-candras-projects.vercel.app [44s]
+[2K[1A[2K[GProduction: https://web-8ejhofaer-candras-projects.vercel.app [51s]
 Completing...
-Aliased: https://web-neon-one-56.vercel.app [44s]
+Aliased: https://web-neon-one-56.vercel.app [51s]
 
 Common next commands:
-- `vercel inspect web-fqr1po20c-candras-projects.vercel.app --logs`
-- `vercel redeploy web-fqr1po20c-candras-projects.vercel.app`
+- `vercel inspect web-8ejhofaer-candras-projects.vercel.app --logs`
+- `vercel redeploy web-8ejhofaer-candras-projects.vercel.app`
