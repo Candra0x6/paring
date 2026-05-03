@@ -61,6 +61,11 @@ export default function NewBookingPage() {
   
   const totalPrice = servicePrices[serviceType] || 150000;
 
+  // Sync totalPrice with form state for validation
+  useEffect(() => {
+    setValue('totalPrice', totalPrice);
+  }, [totalPrice, setValue]);
+
   const onSubmit = (data: AppointmentFormData) => {
     // Combine date and time
     const combinedDateTime = new Date(`${data.dueDate}T${data.dueTime || '10:00'}:00`);
@@ -74,7 +79,7 @@ export default function NewBookingPage() {
         serviceName: 'NON_MEDIS',
         status: 'PENDING',
         dueDate: combinedDateTime.toISOString(),
-        totalPrice,
+        totalPrice: data.totalPrice,
       },
       {
         onSuccess: () => {
@@ -314,7 +319,8 @@ export default function NewBookingPage() {
                 </div>
               </div>
               <Button
-                type="submit"
+                type="button"
+                onClick={handleSubmit(onSubmit)}
                 disabled={isPending}
                 className="h-14 px-8 justify-center rounded-2xl bg-[#37A47C] hover:bg-[#1B4332] shadow-lg shadow-[#37A47C]/20 text-lg disabled:opacity-50"
               >
