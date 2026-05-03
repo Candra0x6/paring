@@ -34,7 +34,13 @@ export class PaymentService {
     // ATURAN BISNIS: Pembayaran maksimal 120 menit (2 jam) SEBELUM jadwal layanan dimulai
     // agar perawat punya waktu bersiap dan berangkat.
     const preparationBufferMinutes = 120;
-    const expiryDuration = diffInMinutes - preparationBufferMinutes;
+    let expiryDuration = diffInMinutes - preparationBufferMinutes;
+
+    // Midtrans maximum page_expiry duration is 7 days (10,080 minutes)
+    const MAX_MIDTRANS_EXPIRY = 7 * 24 * 60;
+    if (expiryDuration > MAX_MIDTRANS_EXPIRY) {
+      expiryDuration = MAX_MIDTRANS_EXPIRY;
+    }
 
     // Jika waktu sudah terlalu mepet, tolak pembuatan transaksi
     if (expiryDuration <= 0) {
