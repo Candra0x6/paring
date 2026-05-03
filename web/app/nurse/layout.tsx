@@ -18,7 +18,7 @@ export default function NurseLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="min-h-screen bg-[#FBF9F6] font-sans text-slate-800 pb-20 md:pb-0 md:flex">
+    <div className="min-h-screen bg-[#FBF9F6] font-sans text-slate-800 flex flex-col md:flex-row">
 
       {/* Desktop Sidebar (hidden on mobile) */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-[#37A47C]/10 fixed inset-y-0 z-50">
@@ -52,7 +52,7 @@ export default function NurseLayout({ children }: { children: React.ReactNode })
       </main>
 
       {/* Mobile Bottom Navigation Component */}
-      <div className="md:hidden fixed bottom-6 inset-x-6 z-50 flex justify-center">
+      <div className="md:hidden py-8 flex justify-center">
         <nav className="bg-[#1B4332] rounded-full px-2 py-2 shadow-2xl shadow-black/60 border border-white/5 flex items-center gap-1">
           {navItems.map((item) => {
             const isActive = item.href === '/nurse/dashboard'

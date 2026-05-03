@@ -15,7 +15,12 @@ async function createApp(): Promise<INestApplication> {
 
     app.setGlobalPrefix('api');
     app.enableCors({
-      origin: true,
+      origin: [
+        'https://paring.id',
+        'https://www.paring.id',
+        'https://web-neon-one-56.vercel.app',
+        'http://localhost:3001'
+      ],
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-User-Role'],

@@ -143,7 +143,7 @@ export default function NurseSearchPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-[100px] left-6 right-6 z-50"
+            className="fixed bottom-6 left-6 right-6 z-50"
           >
             <div className="bg-[#1B4332] text-white p-5 rounded-[2.5rem] shadow-2xl shadow-[#1B4332]/40 relative overflow-hidden border border-white/10">
               {/* Background Decoration */}

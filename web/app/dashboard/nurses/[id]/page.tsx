@@ -161,7 +161,7 @@ export default function NurseProfilePage() {
       </div>
 
       {/* Floating Action Bar (Stacked above bottom nav) */}
-      <div className="fixed bottom-[84px] inset-x-0 bg-white/80 backdrop-blur-xl border-t border-slate-100 p-4 z-40">
+      <div className="fixed bottom-0 inset-x-0 bg-white/80 backdrop-blur-xl border-t border-slate-100 p-4 z-40">
         <div className="max-w-3xl mx-auto flex gap-4">
           <Button
             onClick={() => window.location.href = `/dashboard/consultation/${nurseId}`}
