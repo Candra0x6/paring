@@ -37,9 +37,20 @@ export default function NurseAppointmentDetail() {
   }
 
   const handleStartSession = () => {
-    if (appointment.status === 'PENDING') {
-      toast.info('Mengarahkan ke pemeriksaan medis...');
-      router.push(`/nurse/session/${appointmentId}/checklist`);
+    if (appointment.status === 'CONFIRMED') {
+      updateAppointment(
+        { id: appointmentId, data: { status: 'ONGOING' } },
+        {
+          onSuccess: () => {
+            toast.success('Sesi dimulai');
+            router.push(`/nurse/session/${appointmentId}/checklist`);
+          },
+          onError: (error: any) => {
+            const msg = error.response?.data?.message || 'Gagal memulai sesi';
+            toast.error(msg);
+          }
+        }
+      );
     }
   };
 
@@ -152,11 +163,11 @@ export default function NurseAppointmentDetail() {
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
               <span className="text-sm text-slate-600">Status Bayar</span>
               <span className={`text-xs font-bold px-2 py-1 rounded-full
-                ${appointment.status === 'CONFIRMED' || appointment.status === 'IN_PROGRESS' 
+                ${appointment.status === 'CONFIRMED' || appointment.status === 'ONGOING' 
                   ? 'bg-green-100 text-green-700' 
                   : 'bg-yellow-100 text-yellow-700'}`}
               >
-                {appointment.status === 'CONFIRMED' || appointment.status === 'IN_PROGRESS' ? 'Terbayar' : 'Menunggu'}
+                {appointment.status === 'CONFIRMED' || appointment.status === 'ONGOING' ? 'Terbayar' : 'Menunggu'}
               </span>
             </div>
           </div>
@@ -173,7 +184,7 @@ export default function NurseAppointmentDetail() {
               Mulai Sesi Medis
             </Button>
           )}
-          {appointment.status === 'IN_PROGRESS' && (
+          {appointment.status === 'ONGOING' && (
             <Button 
               onClick={handleCompleteSession}
               disabled={isPending}

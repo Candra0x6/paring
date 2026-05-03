@@ -21,7 +21,7 @@ export default function NurseEarnings() {
 
   // Get confirmed appointments (pending payout)
   const confirmedAppointments = appointments.filter((apt: any) => 
-    apt.status === 'CONFIRMED' || apt.status === 'IN_PROGRESS'
+    apt.status === 'CONFIRMED' || apt.status === 'ONGOING'
   );
 
   // Calculate total earnings

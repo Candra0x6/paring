@@ -12,7 +12,7 @@ export default function SessionsPage() {
   const appointments = appointmentsData?.data || [];
   
   const STATUS_MAP: Record<string, string[]> = {
-    aktif: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'],
+    aktif: ['PENDING', 'CONFIRMED', 'ONGOING'],
     selesai: ['COMPLETED'],
     dibatalkan: ['CANCELLED']
   };
@@ -84,11 +84,11 @@ export default function SessionsPage() {
                 <div className={`px-3 py-1 font-bold text-xs rounded-full border
                   ${apt.status === 'COMPLETED' 
                     ? 'bg-slate-100 text-slate-600 border-slate-200' 
-                    : apt.status === 'IN_PROGRESS'
+                    : apt.status === 'ONGOING'
                     ? 'bg-blue-50 text-blue-600 border-blue-200'
                     : 'bg-yellow-50 text-yellow-600 border-yellow-200'}`}
                 >
-                  {apt.status === 'COMPLETED' ? 'Selesai' : apt.status === 'IN_PROGRESS' ? 'Berlangsung' : 'Menunggu'}
+                  {apt.status === 'COMPLETED' ? 'Selesai' : apt.status === 'ONGOING' ? 'Berlangsung' : 'Menunggu'}
                 </div>
               </div>
               

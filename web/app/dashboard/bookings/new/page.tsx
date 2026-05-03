@@ -298,49 +298,49 @@ export default function NewBookingPage() {
           <label className="block text-xs font-bold text-[#1B4332] mb-3 uppercase tracking-wider">
             Catatan Tambahan
           </label>
-          <Textarea
-            placeholder="Kondisi keluhan detail hari ini..."
-            rows={3}
-            className="bg-[#F8FAFC] border-slate-100 text-sm"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-        </section>
+          <div className="space-y-4">
+            <Textarea
+              placeholder="Kondisi keluhan detail hari ini..."
+              rows={3}
+              className="bg-[#F8FAFC] border-slate-100 text-sm"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
 
-        {/* Spacer for fixed bottom */}
-        <div className="h-8"></div>
-      </form>
-
-      {/* Final CTA Fixed to Bottom */}
-      <div className="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 p-4 safe-area-pb z-50">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
-          <div>
-            <div className="text-xs text-slate-500 font-bold uppercase mb-0.5">
-              Total Harga
-            </div>
-            <div className="font-serif text-2xl font-bold text-[#1B4332]">
-              Rp {(totalPrice / 1000).toFixed(0)}K
+            {/* Price Summary and Action Button moved here from fixed bottom */}
+            <div className="pt-6 border-t border-slate-50 flex items-center justify-between gap-4">
+              <div>
+                <div className="text-xs text-slate-500 font-bold uppercase mb-0.5">
+                  Total Harga
+                </div>
+                <div className="font-serif text-2xl font-bold text-[#1B4332]">
+                  Rp {(totalPrice / 1000).toFixed(0)}K
+                </div>
+              </div>
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="h-14 px-8 justify-center rounded-2xl bg-[#37A47C] hover:bg-[#1B4332] shadow-lg shadow-[#37A47C]/20 text-lg disabled:opacity-50"
+              >
+                {isPending ? (
+                  <>
+                    <Loader size={20} className="mr-2 animate-spin" />
+                    Memproses...
+                  </>
+                ) : (
+                  <>
+                    <Save size={20} className="mr-2" />
+                    Kirim Request
+                  </>
+                )}
+              </Button>
             </div>
           </div>
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            disabled={isPending}
-            className="h-14 px-8 justify-center rounded-2xl bg-[#37A47C] hover:bg-[#1B4332] shadow-lg shadow-[#37A47C]/20 text-lg disabled:opacity-50"
-          >
-            {isPending ? (
-              <>
-                <Loader size={20} className="mr-2 animate-spin" />
-                Memproses...
-              </>
-            ) : (
-              <>
-                <Save size={20} className="mr-2" />
-                Kirim Request
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
+        </section>
+
+        {/* Spacer for bottom */}
+        <div className="h-12"></div>
+      </form>
     </div>
   );
 }

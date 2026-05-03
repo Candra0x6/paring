@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 const STATUS_INFO: Record<string, { label: string; color: string; bgColor: string; textColor: string }> = {
   PENDING: { label: 'Menunggu Pembayaran', color: 'bg-red-500', bgColor: 'bg-[#ff4d4f]', textColor: 'text-white' },
   CONFIRMED: { label: 'Terkonfirmasi', color: 'bg-green-500', bgColor: 'bg-[#52c41a]', textColor: 'text-white' },
-  IN_PROGRESS: { label: 'Sedang Berlangsung', color: 'bg-blue-500', bgColor: 'bg-blue-500', textColor: 'text-white' },
+  ONGOING: { label: 'Sedang Berlangsung', color: 'bg-blue-500', bgColor: 'bg-blue-500', textColor: 'text-white' },
   COMPLETED: { label: 'Selesai', color: 'bg-slate-500', bgColor: 'bg-slate-500', textColor: 'text-white' },
   CANCELLED: { label: 'Dibatalkan', color: 'bg-red-600', bgColor: 'bg-red-600', textColor: 'text-white' }
 };
@@ -93,7 +93,7 @@ export default function BookingDetailPage() {
                <p className="text-sm font-light leading-relaxed mb-4 opacity-90">
                  {appointment.status === 'PENDING' && 'Perawat telah mengonfirmasi booking Anda. Silakan selesaikan pembayaran untuk mengunci jadwal.'}
                  {appointment.status === 'CONFIRMED' && 'Booking Anda telah dikonfirmasi. Perawat akan tiba sesuai jadwal yang telah ditentukan.'}
-                 {appointment.status === 'IN_PROGRESS' && 'Sesi perawatan sedang berlangsung. Terima kasih telah memilih PARING.'}
+                 {appointment.status === 'ONGOING' && 'Sesi perawatan sedang berlangsung. Terima kasih telah memilih PARING.'}
                </p>
                {appointment.status === 'PENDING' && (
                  <Link href={`/dashboard/payment/${appointmentId}`}>

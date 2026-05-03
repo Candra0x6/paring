@@ -6,7 +6,7 @@ import { Calendar, CheckCircle2, ChevronRight, FileText, Loader } from 'lucide-r
 import { useAppointments } from '@/lib/hooks/useApi';
 
 const STATUS_MAP: Record<string, string[]> = {
-  aktif: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'],
+  aktif: ['PENDING', 'CONFIRMED', 'ONGOING'],
   selesai: ['COMPLETED'],
   dibatalkan: ['CANCELLED']
 };
@@ -14,7 +14,7 @@ const STATUS_MAP: Record<string, string[]> = {
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   PENDING: { label: 'Menunggu Pembayaran', color: 'bg-[#ff4d4f]/10 text-red-600 border-[#ff4d4f]/20' },
   CONFIRMED: { label: 'Terkonfirmasi', color: 'bg-[#E2F1EC] text-[#37A47C] border-[#37A47C]/20' },
-  IN_PROGRESS: { label: 'Sedang Berlangsung', color: 'bg-blue-50 text-blue-600 border-blue-200' },
+  ONGOING: { label: 'Sedang Berlangsung', color: 'bg-blue-50 text-blue-600 border-blue-200' },
   COMPLETED: { label: 'Selesai', color: 'bg-slate-100 text-slate-600 border-slate-200' },
   CANCELLED: { label: 'Dibatalkan', color: 'bg-red-50 text-red-600 border-red-200' }
 };

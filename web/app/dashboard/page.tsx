@@ -14,9 +14,9 @@ export default function DashboardHome() {
 
   const appointments = appointmentsData?.data || [];
   
-  // Get active appointments (CONFIRMED or IN_PROGRESS)
+  // Get active appointments (CONFIRMED or ONGOING)
   const activeAppointments = appointments.filter((apt: any) => 
-    apt.status === 'CONFIRMED' || apt.status === 'IN_PROGRESS'
+    apt.status === 'CONFIRMED' || apt.status === 'ONGOING'
   );
   
   // Get completed appointments

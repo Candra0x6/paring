@@ -76,7 +76,7 @@ export default function MonitoringPage() {
           </Link>
           <div className="flex items-center gap-2 bg-[#37A47C] px-3 py-1 rounded-full border border-white/10">
             <div className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></div>
-            <span className="text-white text-xs font-bold uppercase tracking-widest">{appointment.status === 'IN_PROGRESS' ? 'Sesi Aktif' : 'Sesi Selesai'}</span>
+            <span className="text-white text-xs font-bold uppercase tracking-widest">{appointment.status === 'ONGOING' ? 'Sesi Aktif' : 'Sesi Selesai'}</span>
           </div>
         </div>
         

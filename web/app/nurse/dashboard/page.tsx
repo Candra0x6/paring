@@ -19,7 +19,7 @@ export default function NurseDashboard() {
 
   // Filter upcoming appointments (confirmed or in progress)
   const upcomingVisits = appointments
-    .filter((apt: any) => apt.status === 'CONFIRMED' || apt.status === 'IN_PROGRESS')
+    .filter((apt: any) => apt.status === 'CONFIRMED' || apt.status === 'ONGOING')
     .slice(0, 2);
 
   // Calculate earnings from API or fallback to appointment-based calculation
