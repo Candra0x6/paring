@@ -1,14 +1,19 @@
 Retrieving project…
 Deploying candras-projects/backend
-Inspect: https://vercel.com/candras-projects/backend/88NWvb7bsCkWvJ8WpoFJ1LN3REo8 [2s]
-Production: https://backend-gn1njphh3-candras-projects.vercel.app [2s]
-https://backend-gn1njphh3-candras-projects.vercel.appBuilding...
+Uploading [--------------------] (0.0B/172.5KB)
+Uploading [======--------------] (54.3KB/172.5KB)
+Uploading [==========----------] (88.2KB/172.5KB)
+Uploading [===============-----] (136.2KB/172.5KB)
+Uploading [====================] (172.5KB/172.5KB)
+Inspect: https://vercel.com/candras-projects/backend/EKEDzErn9fE6rWNXRw1TFwfyanfJ [4s]
+Production: https://backend-1kom7mu0l-candras-projects.vercel.app [4s]
+https://backend-1kom7mu0l-candras-projects.vercel.appBuilding...
 Building...
 Building: Running build in Washington, D.C., USA (East) – iad1
 Building: Build machine configuration: 2 cores, 8 GB
 Building: Retrieving list of deployment files...
 Building: Downloading 326 deployment files...
-Building: Restored build cache from previous deployment (2fa7CJdqMYCH1mKDMVGYTRzHUTqm)
+Building: Restored build cache from previous deployment (FCnTQYvejrmoSRxffS7V3fjdih9y)
 Building: Warning: "vercel" found in project dependencies and will be ignored.
 Building: Running "vercel build"
 Building: Vercel CLI 51.6.1
@@ -18,7 +23,7 @@ Building: > backend@0.0.1 postinstall
 Building: > prisma generate
 Building: Loaded Prisma config from prisma.config.ts.
 Building: Prisma schema loaded from prisma/schema.prisma.
-Building: ✔ Generated Prisma Client (7.5.0) to ./generated/prisma in 134ms
+Building: ✔ Generated Prisma Client (7.5.0) to ./generated/prisma in 135ms
 Building: up to date in 3s
 Building: 163 packages are looking for funding
 Building: run `npm fund` for details
@@ -33,7 +38,7 @@ Building: │  Run the following to update                            │
 Building: │    npm i --save-dev prisma@latest                       │
 Building: │    npm i @prisma/client@latest                          │
 Building: └─────────────────────────────────────────────────────────┘
-Building: ✔ Generated Prisma Client (7.5.0) to ./generated/prisma in 118ms
+Building: ✔ Generated Prisma Client (7.5.0) to ./generated/prisma in 117ms
 Building: Loaded Prisma config from prisma.config.ts.
 Building: Prisma schema loaded from prisma/schema.prisma.
 Building: Datasource "db": PostgreSQL database "neondb", schema "public" at "ep-sweet-wildflower-aomb7ani-pooler.c-2.ap-southeast-1.aws.neon.tech"
@@ -43,11 +48,11 @@ Building: Build Completed in /vercel/output [23s]
 Building: Deploying outputs...
 Building: Deployment completed
 Building: Creating build cache...
-[2K[1A[2K[GProduction: https://backend-gn1njphh3-candras-projects.vercel.app [40s]
+[2K[1A[2K[GProduction: https://backend-1kom7mu0l-candras-projects.vercel.app [41s]
 Completing...
-Aliased: https://backend-psi-inky-87.vercel.app [40s]
+Aliased: https://backend-psi-inky-87.vercel.app [41s]
 Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Settings will not apply. Learn More: https://vercel.link/unused-build-settings
 
 Common next commands:
-- `vercel inspect backend-gn1njphh3-candras-projects.vercel.app --logs`
-- `vercel redeploy backend-gn1njphh3-candras-projects.vercel.app`
+- `vercel inspect backend-1kom7mu0l-candras-projects.vercel.app --logs`
+- `vercel redeploy backend-1kom7mu0l-candras-projects.vercel.app`
